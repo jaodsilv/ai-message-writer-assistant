@@ -8,6 +8,8 @@ import type {
 interface MessageServiceConfig {
   environment?: 'development' | 'production' | 'testing';
   enableLogging?: boolean;
+  allowedTones?: string[];
+  allowedPlatforms?: string[];
 }
 
 class MessageService {
@@ -18,6 +20,8 @@ class MessageService {
     this.config = {
       environment: config.environment || 'development',
       enableLogging: config.enableLogging ?? (config.environment === 'development'),
+      allowedTones: config.allowedTones || ['professional', 'warm', 'concise', 'formal', 'casual', 'persuasive'],
+      allowedPlatforms: config.allowedPlatforms || ['email', 'linkedin', 'support', 'custom'],
     };
 
     // Create appropriate client based on environment
@@ -99,13 +103,13 @@ class MessageService {
     }
 
     // Validate tone options
-    const validTones = ['professional', 'warm', 'concise', 'formal', 'casual', 'persuasive'];
+    const validTones = this.config.allowedTones || ['professional', 'warm', 'concise', 'formal', 'casual', 'persuasive'];
     if (!validTones.includes(options.tone.toLowerCase())) {
       throw new Error(`Invalid tone: ${options.tone}. Must be one of: ${validTones.join(', ')}`);
     }
 
     // Validate platform options
-    const validPlatforms = ['email', 'linkedin', 'support', 'custom'];
+    const validPlatforms = this.config.allowedPlatforms || ['email', 'linkedin', 'support', 'custom'];
     if (!validPlatforms.includes(options.platform.toLowerCase())) {
       throw new Error(`Invalid platform: ${options.platform}. Must be one of: ${validPlatforms.join(', ')}`);
     }
@@ -175,11 +179,28 @@ class MessageService {
 
 // Singleton instance for the application
 let messageServiceInstance: MessageService | null = null;
+let isInitializing = false;
 
 export function getMessageService(): MessageService {
+  if (!messageServiceInstance && !isInitializing) {
+    isInitializing = true;
+    try {
+      const environment = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+      messageServiceInstance = new MessageService({ environment });
+    } finally {
+      isInitializing = false;
+    }
+  }
+  
+  // Wait for initialization to complete if another thread is initializing
+  while (isInitializing && !messageServiceInstance) {
+    // This creates a simple busy wait for concurrent access
+    // In a proper threading environment, you'd use a mutex or similar
+    continue;
+  }
+  
   if (!messageServiceInstance) {
-    const environment = process.env.NODE_ENV === 'production' ? 'production' : 'development';
-    messageServiceInstance = new MessageService({ environment });
+    throw new Error('Failed to initialize MessageService');
   }
   
   return messageServiceInstance;

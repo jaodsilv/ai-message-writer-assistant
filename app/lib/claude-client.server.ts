@@ -111,7 +111,7 @@ Respond with ONLY two things:
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         const response = await this.anthropic.messages.create({
-          model: "claude-3-5-sonnet-20241022",
+          model: this.config.model || "claude-3-5-sonnet-20241022",
           max_tokens: 4000,
           temperature: 0.7,
           system: "You are a professional message writer. Capable of writing any type of message in any requested tone. Focus on clarity, appropriate tone, and actionable content.",
@@ -191,7 +191,13 @@ Respond with ONLY two things:
   }
 
   validateConfig(): boolean {
-    return !!(this.config.apiKey && this.config.apiKey.startsWith('sk-'));
+    if (!this.config.apiKey) {
+      return false;
+    }
+    
+    // Validate API key format: should be sk- followed by 48 alphanumeric characters
+    const apiKeyPattern = /^sk-[a-zA-Z0-9]{48}$/;
+    return apiKeyPattern.test(this.config.apiKey);
   }
 
   getConfig(): ClaudeClientConfig {
@@ -233,23 +239,23 @@ class MockClaudeClient implements ClaudeClient {
 export class ClaudeClientFactory {
   private static configurations: Record<ClaudeClientType, Partial<ClaudeClientConfig>> = {
     development: {
-      timeout: 60000,
-      maxRetries: 3,
+      timeout: parseInt(process.env.CLAUDE_TIMEOUT_DEV || '60000', 10),
+      maxRetries: parseInt(process.env.CLAUDE_MAX_RETRIES_DEV || '3', 10),
       environment: 'development'
     },
     production: {
-      timeout: 30000,
-      maxRetries: 2,
+      timeout: parseInt(process.env.CLAUDE_TIMEOUT_PROD || '30000', 10),
+      maxRetries: parseInt(process.env.CLAUDE_MAX_RETRIES_PROD || '2', 10),
       environment: 'production'
     },
     testing: {
-      timeout: 5000,
-      maxRetries: 1,
+      timeout: parseInt(process.env.CLAUDE_TIMEOUT_TEST || '5000', 10),
+      maxRetries: parseInt(process.env.CLAUDE_MAX_RETRIES_TEST || '1', 10),
       environment: 'testing'
     },
     custom: {
-      timeout: 30000,
-      maxRetries: 3,
+      timeout: parseInt(process.env.CLAUDE_TIMEOUT || '30000', 10),
+      maxRetries: parseInt(process.env.CLAUDE_MAX_RETRIES || '3', 10),
       environment: 'development'
     }
   };
@@ -267,9 +273,10 @@ export class ClaudeClientFactory {
       ...overrides
     };
 
-    // Validate API key
-    if (!config.apiKey || !config.apiKey.startsWith('sk-')) {
-      throw new Error('Invalid API key format. API key must start with "sk-"');
+    // Validate API key format
+    const apiKeyPattern = /^sk-[a-zA-Z0-9]{48}$/;
+    if (!config.apiKey || !apiKeyPattern.test(config.apiKey)) {
+      throw new Error('Invalid API key format. API key must be in format: sk-[48 alphanumeric characters]');
     }
 
     // Return mock client for testing
@@ -281,6 +288,11 @@ export class ClaudeClientFactory {
   }
 
   static createFromEnv(type: ClaudeClientType = 'development'): ClaudeClient {
+    // Production environment validation
+    if (process.env.NODE_ENV === 'production' && !process.env.ANTHROPIC_API_KEY) {
+      throw new Error('ANTHROPIC_API_KEY is required in production environment');
+    }
+    
     const apiKey = process.env.ANTHROPIC_API_KEY;
     
     if (!apiKey) {
@@ -291,6 +303,10 @@ export class ClaudeClientFactory {
     
     if (process.env.ANTHROPIC_API_URL) {
       overrides.baseURL = process.env.ANTHROPIC_API_URL;
+    }
+    
+    if (process.env.CLAUDE_MODEL) {
+      overrides.model = process.env.CLAUDE_MODEL;
     }
 
     return this.create(type, apiKey, overrides);

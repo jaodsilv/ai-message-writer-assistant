@@ -4,6 +4,9 @@ export interface ClaudeClientConfig {
   timeout?: number;
   maxRetries?: number;
   environment?: 'development' | 'production' | 'testing';
+  model?: string;
+  allowedTones?: string[];
+  allowedPlatforms?: string[];
 }
 
 export interface MessageGenerationOptions {
