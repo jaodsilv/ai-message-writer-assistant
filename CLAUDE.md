@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Output Formatting Preferences
+- Always use numbered lists instead of bullet points when listing items
+- Use numbers (1., 2., 3.) for all lists and enumerations
+
 ## Application Purpose
 
 AI Message Writer Assistant is designed to help with communication across three main areas:
