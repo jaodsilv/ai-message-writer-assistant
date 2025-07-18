@@ -131,7 +131,11 @@ const findMatchingLocale = (locale: string) => {
   return match || 'en-US';
 };
 const locale = (appLocale !== '{{APP_LOCALE}}') ? findMatchingLocale(appLocale) : findMatchingLocale(browserLocale);
-const t = (key: string) => TRANSLATIONS[locale as keyof typeof TRANSLATIONS]?.[key] || TRANSLATIONS['en-US'][key] || key;
+const t = (key: string) => {
+  const localeTranslations = TRANSLATIONS[locale as keyof typeof TRANSLATIONS];
+  const fallbackTranslations = TRANSLATIONS['en-US'];
+  return (localeTranslations as any)?.[key] || (fallbackTranslations as any)[key] || key;
+};
 
 export function EmailWriterApp({ loaderData }: Route.ComponentProps) {
   const [rawThoughts, setRawThoughts] = useState('');

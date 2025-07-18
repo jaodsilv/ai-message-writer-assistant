@@ -20,8 +20,12 @@ class MessageService {
     this.config = {
       environment: config.environment || 'development',
       enableLogging: config.enableLogging ?? (config.environment === 'development'),
-      allowedTones: config.allowedTones || ['professional', 'warm', 'concise', 'formal', 'casual', 'persuasive'],
-      allowedPlatforms: config.allowedPlatforms || ['email', 'linkedin', 'support', 'custom'],
+      allowedTones: config.allowedTones || 
+        (process.env.ALLOWED_TONES?.split(',').map(t => t.trim())) || 
+        ['professional', 'warm', 'concise', 'formal', 'casual', 'persuasive'],
+      allowedPlatforms: config.allowedPlatforms || 
+        (process.env.ALLOWED_PLATFORMS?.split(',').map(p => p.trim())) || 
+        ['email', 'linkedin', 'support', 'custom'],
     };
 
     // Create appropriate client based on environment
@@ -182,28 +186,22 @@ let messageServiceInstance: MessageService | null = null;
 let isInitializing = false;
 
 export function getMessageService(): MessageService {
-  if (!messageServiceInstance && !isInitializing) {
-    isInitializing = true;
-    try {
-      const environment = process.env.NODE_ENV === 'production' ? 'production' : 'development';
-      messageServiceInstance = new MessageService({ environment });
-    } finally {
-      isInitializing = false;
-    }
+  if (messageServiceInstance) {
+    return messageServiceInstance;
   }
   
-  // Wait for initialization to complete if another thread is initializing
-  while (isInitializing && !messageServiceInstance) {
-    // This creates a simple busy wait for concurrent access
-    // In a proper threading environment, you'd use a mutex or similar
-    continue;
+  if (isInitializing) {
+    throw new Error('MessageService is currently being initialized. Please try again.');
   }
   
-  if (!messageServiceInstance) {
-    throw new Error('Failed to initialize MessageService');
+  isInitializing = true;
+  try {
+    const environment = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+    messageServiceInstance = new MessageService({ environment });
+    return messageServiceInstance;
+  } finally {
+    isInitializing = false;
   }
-  
-  return messageServiceInstance;
 }
 
 // For testing purposes
