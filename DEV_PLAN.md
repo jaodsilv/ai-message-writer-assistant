@@ -77,29 +77,47 @@
 - Create `.env.example` - Document required environment variables
 - Fix clipboard API usage for cross-browser compatibility
 
-### 1.2 Project Infrastructure Setup
-**Priority: High**
+### 1.2 Testing Framework Setup
+**Priority: Critical - Must be completed early**
 
 ```bash
-# Dependencies to add
-npm install @hookform/resolvers react-hook-form zod next-themes vitest @testing-library/react @testing-library/jest-dom jsdom
+# Testing dependencies to add
+npm install vitest @testing-library/react @testing-library/jest-dom jsdom
 ```
 
 **Tasks:**
-- [ ] Set up Vitest testing framework
+- [ ] Set up Vitest testing framework with proper configuration
+- [ ] Configure test environment for React components
+- [ ] Create initial test utilities and helpers
+- [ ] Set up test scripts in package.json
+- [ ] Establish testing patterns and conventions
+
+**Files to Create:**
+- `vitest.config.ts` - Test configuration
+- `tests/setup.ts` - Test environment setup
+- `tests/utils.tsx` - Testing utilities and helpers
+
+### 1.3 Project Infrastructure Setup
+**Priority: High**
+
+```bash
+# Additional dependencies to add
+npm install @hookform/resolvers react-hook-form zod next-themes
+```
+
+**Tasks:**
 - [ ] Configure next-themes for dark/light mode
 - [ ] Create base project structure (folders)
 - [ ] Set up TypeScript strict configuration
 - [ ] Create development scripts and build process
 
 **Files to Create:**
-- `vitest.config.ts` - Test configuration
 - `app/lib/utils.ts` - Utility functions
 - `app/hooks/use-local-storage.tsx` - LocalStorage hook
 - `app/hooks/use-theme.tsx` - Theme management hook
 - `app/hooks/use-keyboard-shortcuts.tsx` - Keyboard shortcut system
 
-### 1.3 Core UI Components
+### 1.4 Core UI Components
 **Priority: High**
 
 **Component Order:**
@@ -123,7 +141,7 @@ npm install @hookform/resolvers react-hook-form zod next-themes vitest @testing-
 
 **Testing:** Unit tests for each component
 
-### 1.4 Layout Components
+### 1.5 Layout Components
 **Priority: Medium**
 
 **Components:**
@@ -371,32 +389,32 @@ npm install @hookform/resolvers react-hook-form zod next-themes vitest @testing-
 
 ## Development Milestones
 
-### Milestone 1 (End of Week 2): Foundation Complete
+### Milestone 1 (End of Week 2 + 2 days buffer): Foundation Complete
 - ✅ All current features validated and working
 - ✅ UI component library functional
 - ✅ Theme system implemented
 - ✅ Basic layout structure
 - ✅ Testing framework setup
 
-### Milestone 2 (End of Week 4): Data Layer Complete
+### Milestone 2 (End of Week 4 + 3 days buffer): Data Layer Complete
 - ✅ State management working reliably
 - ✅ LocalStorage persistence implemented
 - ✅ Import/export basic functionality
 - ✅ Form validation system complete
 
-### Milestone 3 (End of Week 7): Core Features Complete
+### Milestone 3 (End of Week 7 + 1 week buffer): Core Features Complete
 - ✅ Message management system fully functional
 - ✅ Thread management system implemented
 - ✅ AI integration refactored and robust
 - ✅ Platform selection working
 
-### Milestone 4 (End of Week 10): Advanced Features Complete
+### Milestone 4 (End of Week 10 + 1 week buffer): Advanced Features Complete
 - ✅ Multi-page application with routing
 - ✅ Search and filtering systems
 - ✅ Bulk operations implemented
 - ✅ Enhanced UX features
 
-### Milestone 5 (End of Week 12): Production Ready
+### Milestone 5 (End of Week 12 + 1 week buffer): Production Ready
 - ✅ Comprehensive error handling
 - ✅ Performance optimized
 - ✅ Fully tested (>80% coverage)

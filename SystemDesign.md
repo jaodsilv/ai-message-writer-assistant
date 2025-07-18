@@ -57,7 +57,9 @@ The AI Message Writer Assistant follows a 5-stage development approach, currentl
 - Analytics and insights
 - API marketplace integration
 
-## Folder Structure
+## Planned Folder Structure (Future Implementation)
+
+*Note: This structure represents the planned organization after full development. Current structure is documented in CLAUDE.md.*
 
 ```
 app/
@@ -132,6 +134,8 @@ docs/                    # Documentation
 ├── architecture.md
 └── deployment.md
 ```
+
+**TODO**: Add system architecture diagrams showing data flow and component relationships
 
 ## Key Files to be Created
 

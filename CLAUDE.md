@@ -74,14 +74,23 @@ The application integrates with Anthropic's Claude API through a structured appr
 
 ### Key Features
 
-#### Current Features
+#### Current Features (⚠️ Validation Required)
 1. **AI Message Generation**: Transform raw thoughts into polished messages
+   - [ ] **Validation Required**: Test if Claude API integration actually works
+   - [ ] **Validation Required**: Verify if tone selection affects AI output
+   - [ ] **Validation Required**: Test if context input influences AI generation
 2. **Context Awareness**: Support for conversation history and context
+   - [ ] **Validation Required**: Check if context input influences AI generation
 3. **Multi-Platform**: Email, LinkedIn, support tickets, custom platforms
+   - [ ] **Validation Required**: Verify platform selection affects formatting
 4. **Tone Customization**: Six different tone options
+   - [ ] **Validation Required**: Verify if tone selection affects AI output
 5. **Internationalization**: Multi-language support
+   - [ ] **Validation Required**: Check if translation system switches languages
 6. **Copy-to-Clipboard**: Built-in clipboard functionality
+   - [ ] **Validation Required**: Test copy-to-clipboard functionality
 7. **Keyboard Shortcuts**: Cmd/Ctrl + Enter for generation
+   - [ ] **Validation Required**: Validate keyboard shortcuts (Cmd/Ctrl + Enter)
 
 #### Planned Features
 1. **Import/Export Messages**: Bulk message management and backup
@@ -123,8 +132,13 @@ The application integrates with Anthropic's Claude API through a structured appr
 - No hardcoded credentials in source code
 - `.env` file excluded from version control
 - Client-side API calls through global `window.claude` interface
+- **API Key Validation**: Verify API key format and test connectivity on startup
+- **Error Handling**: Implement graceful handling of API failures and rate limits
+- **API Key Rotation**: Update `.env` file when rotating keys, restart application to apply changes
 
 ### Testing and Linting
 - ESLint configured with React app presets
 - TypeScript type checking via `npm run typecheck`
-- No specific test framework configured yet
+- **Testing Framework**: Vitest + React Testing Library (to be configured in Phase 1)
+- **Test Coverage Target**: >80% coverage for production readiness
+- **Testing Strategy**: Unit tests for components/hooks, integration tests for workflows, E2E tests for critical paths
