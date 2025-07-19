@@ -14,40 +14,46 @@ The AI Message Writer Assistant follows a 5-stage development approach, currentl
 - **State Management**: LocalStorage + React Context
 - **Theme**: next-themes (for dark/light mode)
 
-## Development Stages
+## Development Stages & Project Management
 
-### Stage 1: Minimal Features (MVP)
+### Project Tracking
+- **GitHub Project**: [AI Message Writer Assistant](https://github.com/users/jaodsilv/projects/3)
+- **Issue Tracking**: All features tracked as GitHub issues ([#12-#30](https://github.com/jaodsilv/ai-message-writer-assistant/issues))
+- **Automated Workflow**: GitHub Actions for issue/PR management
+- **Phase-Based Development**: 5 development phases with 19 tracked issues
+
+### Stage 1: Minimal Features (MVP) ✅ **COMPLETED**
 - Basic AI message generation
 - Simple text input/output
 - Copy to clipboard
 - Basic tone selection
 
-### Stage 2: Current Features
+### Stage 2: Current Features ✅ **COMPLETED**
 - Multi-platform support (Email, LinkedIn, Support, Custom)
 - Context awareness with conversation history
 - 6 tone options (Professional, Warm, Concise, Formal, Casual, Persuasive)
 - Internationalization (English/Spanish)
 - Keyboard shortcuts (Cmd/Ctrl + Enter)
 
-### Stage 3: Planned Features
-- Import/export messages (File API)
-- Thread division and summarization
-- Email auto-fetch with filtering (Gmail API)
-- Signature management system
-- Message/thread CRUD operations
-- UI mode switching (Single Page vs Wizard)
-- Dark/light mode toggle
-- Manual thread creation
+### Stage 3: Planned Features → **Phase 1-3 Development**
+- Import/export messages ([#26](https://github.com/jaodsilv/ai-message-writer-assistant/issues/26))
+- Thread division and summarization ([#22](https://github.com/jaodsilv/ai-message-writer-assistant/issues/22))
+- Email auto-fetch with filtering ([#27](https://github.com/jaodsilv/ai-message-writer-assistant/issues/27))
+- Signature management system ([#23](https://github.com/jaodsilv/ai-message-writer-assistant/issues/23))
+- Message/thread CRUD operations ([#21](https://github.com/jaodsilv/ai-message-writer-assistant/issues/21))
+- UI mode switching ([#24](https://github.com/jaodsilv/ai-message-writer-assistant/issues/24))
+- Dark/light mode toggle ([#15](https://github.com/jaodsilv/ai-message-writer-assistant/issues/15))
+- Manual thread creation ([#22](https://github.com/jaodsilv/ai-message-writer-assistant/issues/22))
 
-### Stage 4: Suggested Features (Job Hunt Focus)
-- Follow-up automation with scheduling
-- LinkedIn connection tracking
-- Recruiter relationship management
-- Salary negotiation assistant
-- Reference request automation
-- Thank you note generator
-- Network warm-up tools
-- Professional achievement tracker
+### Stage 4: Advanced Features → **Phase 4-5 Development**
+- Follow-up automation with scheduling ([#27](https://github.com/jaodsilv/ai-message-writer-assistant/issues/27))
+- LinkedIn connection tracking ([#27](https://github.com/jaodsilv/ai-message-writer-assistant/issues/27))
+- Recruiter relationship management ([#27](https://github.com/jaodsilv/ai-message-writer-assistant/issues/27))
+- Salary negotiation assistant ([#27](https://github.com/jaodsilv/ai-message-writer-assistant/issues/27))
+- Reference request automation ([#27](https://github.com/jaodsilv/ai-message-writer-assistant/issues/27))
+- Thank you note generator ([#27](https://github.com/jaodsilv/ai-message-writer-assistant/issues/27))
+- Network warm-up tools ([#27](https://github.com/jaodsilv/ai-message-writer-assistant/issues/27))
+- Professional achievement tracker ([#27](https://github.com/jaodsilv/ai-message-writer-assistant/issues/27))
 
 ### Stage 5: Unplanned Features (Future Expansion)
 - Multi-user support with authentication
@@ -134,6 +140,29 @@ docs/                    # Documentation
 ├── architecture.md
 └── deployment.md
 ```
+
+## GitHub Actions Automation
+
+### Workflow Files
+- `.github/workflows/add-issues-to-project.yml` - Auto-add issues to project board
+- `.github/workflows/add-prs-to-project.yml` - Auto-add PRs to project board  
+- `.github/workflows/project-automation.yml` - Status automation (Todo → In Progress → Done)
+
+### Issue Templates
+- `.github/ISSUE_TEMPLATE/enhancement.yml` - Structured enhancement requests
+- `.github/ISSUE_TEMPLATE/bug_report.yml` - Comprehensive bug reports
+
+### Automation Features
+1. **Auto-Project Addition**: Issues/PRs with `enhancement`, `feature`, `bug` labels
+2. **Priority Setting**: Based on `critical`, `high`, `medium`, `low` labels
+3. **Phase Categorization**: Using `phase-1` through `phase-5` labels
+4. **Status Updates**: Automatic status changes on close/merge/reopen
+5. **Template Integration**: Structured forms trigger automation
+
+### Setup Requirements
+- **Personal Access Token**: Classic token with `repo` + `write:org` scopes
+- **Repository Secret**: `ADD_TO_PROJECT_PAT` for workflow authentication
+- **Label Management**: Consistent labeling for automation triggers
 
 **TODO**: Add system architecture diagrams showing data flow and component relationships
 

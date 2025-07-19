@@ -25,6 +25,12 @@ AI Message Writer Assistant is designed to help with communication across three 
 - Requires `.env` file with `ANTHROPIC_API_KEY=your_api_key_here`
 - Never commit `.env` file (already in `.gitignore`)
 
+### GitHub Project Management
+- **Project Board**: [AI Message Writer Assistant](https://github.com/users/jaodsilv/projects/3)
+- **Development Plan**: See `DEV_PLAN.md` for detailed roadmap with issue links
+- **Issue Creation**: Use GitHub issue templates for consistent reporting
+- **Automation**: GitHub Actions automatically add labeled issues/PRs to project board
+
 ## Architecture Overview
 
 ### Tech Stack
@@ -146,3 +152,10 @@ The application integrates with Anthropic's Claude API through a structured appr
 - **Testing Framework**: Vitest + React Testing Library (to be configured in Phase 1)
 - **Test Coverage Target**: >80% coverage for production readiness
 - **Testing Strategy**: Unit tests for components/hooks, integration tests for workflows, E2E tests for critical paths
+
+### Development Workflow
+- **Issue Tracking**: All features tracked as GitHub issues linked to development phases
+- **Project Management**: Automated GitHub Actions workflow for issue/PR management
+- **Phase-Based Development**: See issues [#12-#30](https://github.com/jaodsilv/ai-message-writer-assistant/issues) for detailed implementation plan
+- **Priority Levels**: Critical → High → Medium → Low (automatically set via issue labels)
+- **Status Automation**: Issues/PRs automatically move through Todo → In Progress → Done states

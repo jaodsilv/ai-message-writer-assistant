@@ -1,0 +1,68 @@
+name: Enhancement Request
+description: Request a new feature or improvement
+title: "[Enhancement]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this enhancement request!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What enhancement would you like to see?
+      placeholder: Describe the enhancement or new feature
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this enhancement?
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
+      default: 1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Development Phase
+      description: Which development phase does this belong to?
+      options:
+        - Phase 1 - Foundation & Validation
+        - Phase 2 - State Management & Data Layer
+        - Phase 3 - Core Features Implementation
+        - Phase 4 - Advanced Features
+        - Phase 5 - Polish & Optimization
+        - Future/Backlog
+      default: 5
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What needs to be accomplished for this to be considered complete?
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Criterion 3
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context, screenshots, or examples here
+    validations:
+      required: false

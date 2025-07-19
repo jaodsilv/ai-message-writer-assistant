@@ -1,0 +1,57 @@
+name: Project Automation
+
+on:
+  issues:
+    types:
+      - closed
+      - reopened
+  pull_request:
+    types:
+      - closed
+      - merged
+      - reopened
+
+jobs:
+  update-status:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Update issue status to Done when closed
+        if: github.event_name == 'issues' && github.event.action == 'closed'
+        uses: titoportas/update-project-fields@v0.1.0
+        with:
+          project-url: https://github.com/users/jaodsilv/projects/3
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          item-id: ${{ github.event.issue.node_id }}
+          field-keys: Status
+          field-values: Done
+
+      - name: Update issue status to Todo when reopened
+        if: github.event_name == 'issues' && github.event.action == 'reopened'
+        uses: titoportas/update-project-fields@v0.1.0
+        with:
+          project-url: https://github.com/users/jaodsilv/projects/3
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          item-id: ${{ github.event.issue.node_id }}
+          field-keys: Status
+          field-values: Todo
+
+      - name: Update PR status to Done when merged
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+        uses: titoportas/update-project-fields@v0.1.0
+        with:
+          project-url: https://github.com/users/jaodsilv/projects/3
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          item-id: ${{ github.event.pull_request.node_id }}
+          field-keys: Status
+          field-values: Done
+
+      - name: Update PR status to Todo when reopened
+        if: github.event_name == 'pull_request' && github.event.action == 'reopened'
+        uses: titoportas/update-project-fields@v0.1.0
+        with:
+          project-url: https://github.com/users/jaodsilv/projects/3
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          item-id: ${{ github.event.pull_request.node_id }}
+          field-keys: Status
+          field-values: In Progress
