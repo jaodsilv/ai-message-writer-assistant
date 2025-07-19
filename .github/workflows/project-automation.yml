@@ -60,10 +60,10 @@ jobs:
         with:
           project-url: ${{ env.PROJECT_URL }}
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
-        continue-on-error: true
           item-id: ${{ github.event.issue.node_id }}
           field-keys: Status
           field-values: Todo
+        continue-on-error: true
 
       - name: Update PR status to Done when merged
         if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
@@ -71,10 +71,10 @@ jobs:
         with:
           project-url: ${{ env.PROJECT_URL }}
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
-        continue-on-error: true
           item-id: ${{ github.event.pull_request.node_id }}
           field-keys: Status
           field-values: Done
+        continue-on-error: true
 
       - name: Update PR status to In Progress when reopened
         if: github.event_name == 'pull_request' && github.event.action == 'reopened'
@@ -82,7 +82,7 @@ jobs:
         with:
           project-url: ${{ env.PROJECT_URL }}
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
-        continue-on-error: true
           item-id: ${{ github.event.pull_request.node_id }}
           field-keys: Status
           field-values: In Progress
+        continue-on-error: true
