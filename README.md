@@ -1,5 +1,9 @@
 # AI Message Writer Assistant
 
+[![Add Issues to Project](https://github.com/jaodsilv/ai-message-writer-assistant/actions/workflows/add-issues-to-project.yml/badge.svg)](https://github.com/jaodsilv/ai-message-writer-assistant/actions/workflows/add-issues-to-project.yml)
+[![Add PRs to Project](https://github.com/jaodsilv/ai-message-writer-assistant/actions/workflows/add-prs-to-project.yml/badge.svg)](https://github.com/jaodsilv/ai-message-writer-assistant/actions/workflows/add-prs-to-project.yml)
+[![Project Automation](https://github.com/jaodsilv/ai-message-writer-assistant/actions/workflows/project-automation.yml/badge.svg)](https://github.com/jaodsilv/ai-message-writer-assistant/actions/workflows/project-automation.yml)
+
 A personal AI-powered communication assistant designed for job hunt, friends, and family messaging using Anthropic's Claude API. Built with React Router v7, TypeScript, and Tailwind CSS.
 
 ## Features
@@ -14,12 +18,12 @@ A personal AI-powered communication assistant designed for job hunt, friends, an
 - **Keyboard Shortcuts**: Cmd/Ctrl + Enter for quick generation
 
 ### Planned Features
-- Import/export messages and signatures
-- Thread division and summarization
-- Email auto-fetch with filtering
-- Message/thread CRUD operations
-- Dark/light mode toggle
-- Job hunt automation tools
+- Import/export messages and signatures ([#26](https://github.com/jaodsilv/ai-message-writer-assistant/issues/26))
+- Thread division and summarization ([#22](https://github.com/jaodsilv/ai-message-writer-assistant/issues/22))
+- Email auto-fetch with filtering ([#27](https://github.com/jaodsilv/ai-message-writer-assistant/issues/27))
+- Message/thread CRUD operations ([#21](https://github.com/jaodsilv/ai-message-writer-assistant/issues/21))
+- Dark/light mode toggle ([#15](https://github.com/jaodsilv/ai-message-writer-assistant/issues/15))
+- Job hunt automation tools ([#27](https://github.com/jaodsilv/ai-message-writer-assistant/issues/27))
 
 ## Getting Started
 
@@ -72,6 +76,27 @@ Type checking:
 ```bash
 npm run typecheck
 ```
+
+## Development Workflow
+
+### Project Management
+- **Project Board**: [AI Message Writer Assistant](https://github.com/users/jaodsilv/projects/3)
+- **Development Plan**: See [DEV_PLAN.md](DEV_PLAN.md) for detailed roadmap
+- **Issue Templates**: Use GitHub issue templates for consistent reporting
+- **Automation**: GitHub Actions automatically manage issues and PRs
+
+### Contributing
+1. **Create Issues**: Use provided templates for bugs and enhancements
+2. **Label Priority**: Apply priority labels (`critical`, `high`, `medium`, `low`)
+3. **Phase Tracking**: Issues are organized by development phases ([#12-#30](https://github.com/jaodsilv/ai-message-writer-assistant/issues))
+4. **Automated Workflow**: Issues/PRs automatically added to project board
+
+### Development Phases
+- **Phase 1**: Foundation & Validation ([#12-#17](https://github.com/jaodsilv/ai-message-writer-assistant/issues))
+- **Phase 2**: State Management & Data Layer ([#18-#20](https://github.com/jaodsilv/ai-message-writer-assistant/issues))
+- **Phase 3**: Core Features Implementation ([#21-#23](https://github.com/jaodsilv/ai-message-writer-assistant/issues))
+- **Phase 4**: Advanced Features ([#24-#27](https://github.com/jaodsilv/ai-message-writer-assistant/issues))
+- **Phase 5**: Polish & Optimization ([#28-#30](https://github.com/jaodsilv/ai-message-writer-assistant/issues))
 
 ## Troubleshooting
 

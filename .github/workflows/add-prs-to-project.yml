@@ -1,0 +1,71 @@
+name: Add Pull Requests to Project
+
+env:
+  PROJECT_URL: ${{ vars.PROJECT_URL || 'https://github.com/users/jaodsilv/projects/3' }}
+
+# Prevent concurrent runs on the same PR
+concurrency:
+  group: pr-automation-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+on:
+  pull_request:
+    types:
+      - opened
+      - labeled
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to process manually'
+        required: true
+        type: string
+
+jobs:
+  add-to-project:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'enhancement') || contains(github.event.pull_request.labels.*.name, 'feature') || contains(github.event.pull_request.labels.*.name, 'bug') || contains(github.event.pull_request.labels.*.name, 'hotfix')
+    
+    steps:
+      - name: Validate PAT token exists
+        if: ${{ secrets.ADD_TO_PROJECT_PAT == '' }}
+        run: |
+          echo "::error::ADD_TO_PROJECT_PAT secret is not configured"
+          exit 1
+          
+      - name: Add PR to project
+        id: add-pr
+        uses: actions/add-to-project@31b3f5e6ca06068c05348da1fb8ab4e5fe1ad2c7
+        with:
+          project-url: ${{ env.PROJECT_URL }}
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+        continue-on-error: true
+        
+      - name: Handle add-to-project failure
+        if: steps.add-pr.outcome == 'failure'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ **Automation Warning**: Failed to add this PR to the project board. Please add it manually or check the workflow configuration.'
+            })
+
+  set-status-in-progress:
+    runs-on: ubuntu-latest
+    needs: add-to-project
+    if: needs.add-to-project.result == 'success'
+    
+    steps:
+      - name: Set status to In Progress
+        id: set-status
+        uses: titoportas/update-project-fields@421a54430b3cdc9eefd8f14f9ce0142ab7678751
+        with:
+          project-url: ${{ env.PROJECT_URL }}
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          item-id: ${{ github.event.pull_request.node_id }}
+          field-keys: Status
+          field-values: In Progress
+        continue-on-error: true

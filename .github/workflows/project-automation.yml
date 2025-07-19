@@ -1,0 +1,88 @@
+name: Project Automation
+
+env:
+  PROJECT_URL: ${{ vars.PROJECT_URL || 'https://github.com/users/jaodsilv/projects/3' }}
+
+# Prevent concurrent runs on the same issue/PR
+concurrency:
+  group: status-automation-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: false
+
+on:
+  issues:
+    types:
+      - closed
+      - reopened
+  pull_request:
+    types:
+      - closed
+      - reopened
+  workflow_dispatch:
+    inputs:
+      item_number:
+        description: 'Issue/PR number to process manually'
+        required: true
+        type: string
+      item_type:
+        description: 'Type of item'
+        required: true
+        type: choice
+        options:
+          - issue
+          - pull_request
+
+jobs:
+  update-status:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Validate PAT token exists
+        if: ${{ secrets.ADD_TO_PROJECT_PAT == '' }}
+        run: |
+          echo "::error::ADD_TO_PROJECT_PAT secret is not configured"
+          exit 1
+          
+      - name: Update issue status to Done when closed
+        if: github.event_name == 'issues' && github.event.action == 'closed'
+        id: close-issue
+        uses: titoportas/update-project-fields@421a54430b3cdc9eefd8f14f9ce0142ab7678751
+        with:
+          project-url: ${{ env.PROJECT_URL }}
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          item-id: ${{ github.event.issue.node_id }}
+          field-keys: Status
+          field-values: Done
+        continue-on-error: true
+
+      - name: Update issue status to Todo when reopened
+        if: github.event_name == 'issues' && github.event.action == 'reopened'
+        uses: titoportas/update-project-fields@421a54430b3cdc9eefd8f14f9ce0142ab7678751
+        with:
+          project-url: ${{ env.PROJECT_URL }}
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          item-id: ${{ github.event.issue.node_id }}
+          field-keys: Status
+          field-values: Todo
+        continue-on-error: true
+
+      - name: Update PR status to Done when merged
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+        uses: titoportas/update-project-fields@421a54430b3cdc9eefd8f14f9ce0142ab7678751
+        with:
+          project-url: ${{ env.PROJECT_URL }}
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          item-id: ${{ github.event.pull_request.node_id }}
+          field-keys: Status
+          field-values: Done
+        continue-on-error: true
+
+      - name: Update PR status to In Progress when reopened
+        if: github.event_name == 'pull_request' && github.event.action == 'reopened'
+        uses: titoportas/update-project-fields@421a54430b3cdc9eefd8f14f9ce0142ab7678751
+        with:
+          project-url: ${{ env.PROJECT_URL }}
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+          item-id: ${{ github.event.pull_request.node_id }}
+          field-keys: Status
+          field-values: In Progress
+        continue-on-error: true
