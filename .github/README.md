@@ -4,9 +4,23 @@ This directory contains GitHub Actions workflows for automating project manageme
 
 ## Setup Required
 
-To enable the project automation workflows, you need to create a Personal Access Token (PAT) with the following permissions:
+To enable the project automation workflows, you need to:
 
-### 1. Create Personal Access Token
+### 1. Configure Repository Variables
+
+Set up the project URL as a repository variable for portability:
+
+1. Go to repository Settings → Secrets and variables → Actions → Variables tab
+2. Click "New repository variable"
+3. Name: `PROJECT_URL`
+4. Value: `https://github.com/users/YOUR_USERNAME/projects/YOUR_PROJECT_NUMBER`
+5. Click "Add variable"
+
+**Note**: If no repository variable is set, workflows will default to `https://github.com/users/jaodsilv/projects/3`
+
+### 2. Create Personal Access Token
+
+Create a Personal Access Token (PAT) with the following permissions:
 
 1. Go to GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens
 2. Click "Generate new token"
@@ -18,9 +32,9 @@ To enable the project automation workflows, you need to create a Personal Access
    - **Projects**: Write
    - **Metadata**: Read
 
-### 2. Add Token to Repository Secrets
+### 3. Add Token to Repository Secrets
 
-1. Go to repository Settings → Secrets and variables → Actions
+1. Go to repository Settings → Secrets and variables → Actions → Secrets tab
 2. Click "New repository secret"
 3. Name: `ADD_TO_PROJECT_PAT`
 4. Value: Your generated PAT token

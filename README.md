@@ -1,5 +1,9 @@
 # AI Message Writer Assistant
 
+[![Add Issues to Project](https://github.com/jaodsilv/ai-message-writer-assistant/actions/workflows/add-issues-to-project.yml/badge.svg)](https://github.com/jaodsilv/ai-message-writer-assistant/actions/workflows/add-issues-to-project.yml)
+[![Add PRs to Project](https://github.com/jaodsilv/ai-message-writer-assistant/actions/workflows/add-prs-to-project.yml/badge.svg)](https://github.com/jaodsilv/ai-message-writer-assistant/actions/workflows/add-prs-to-project.yml)
+[![Project Automation](https://github.com/jaodsilv/ai-message-writer-assistant/actions/workflows/project-automation.yml/badge.svg)](https://github.com/jaodsilv/ai-message-writer-assistant/actions/workflows/project-automation.yml)
+
 A personal AI-powered communication assistant designed for job hunt, friends, and family messaging using Anthropic's Claude API. Built with React Router v7, TypeScript, and Tailwind CSS.
 
 ## Features

@@ -1,7 +1,7 @@
 name: Add Pull Requests to Project
 
 env:
-  PROJECT_URL: https://github.com/users/jaodsilv/projects/3
+  PROJECT_URL: ${{ vars.PROJECT_URL || 'https://github.com/users/jaodsilv/projects/3' }}
 
 # Prevent concurrent runs on the same PR
 concurrency:
