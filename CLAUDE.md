@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Output Formatting Preferences
+- Always use numbered lists instead of bullet points when listing items
+- Use numbers (1., 2., 3.) for all lists and enumerations
+
 ## Application Purpose
 
 AI Message Writer Assistant is designed to help with communication across three main areas:
@@ -74,17 +78,17 @@ The application integrates with Anthropic's Claude API through a structured appr
 
 ### Key Features
 
-#### Current Features (⚠️ Validation Required)
-1. **AI Message Generation**: Transform raw thoughts into polished messages
-   - [ ] **Validation Required**: Test if Claude API integration actually works
-   - [ ] **Validation Required**: Verify if tone selection affects AI output
-   - [ ] **Validation Required**: Test if context input influences AI generation
-2. **Context Awareness**: Support for conversation history and context
-   - [ ] **Validation Required**: Check if context input influences AI generation
+#### Current Features
+1. **AI Message Generation**: Transform raw thoughts into polished messages ✅
+   - [x] **Validated**: Claude API integration works correctly
+   - [x] **Validated**: Tone selection affects AI output
+   - [x] **Validated**: Context input influences AI generation
+2. **Context Awareness**: Support for conversation history and context ✅
+   - [x] **Validated**: Context input influences AI generation
 3. **Multi-Platform**: Email, LinkedIn, support tickets, custom platforms
    - [ ] **Validation Required**: Verify platform selection affects formatting
-4. **Tone Customization**: Six different tone options
-   - [ ] **Validation Required**: Verify if tone selection affects AI output
+4. **Tone Customization**: Six different tone options ✅
+   - [x] **Validated**: Tone selection affects AI output
 5. **Internationalization**: Multi-language support
    - [ ] **Validation Required**: Check if translation system switches languages
 6. **Copy-to-Clipboard**: Built-in clipboard functionality

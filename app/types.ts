@@ -77,10 +77,4 @@ export interface Translations {
   };
 }
 
-declare global {
-  interface Window {
-    claude: {
-      complete: (prompt: string) => Promise<string>;
-    };
-  }
-} 
+// Note: Removed window.claude interface as we now use server-side API integration 
