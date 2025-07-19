@@ -1,5 +1,8 @@
 name: Project Automation
 
+env:
+  PROJECT_URL: https://github.com/users/jaodsilv/projects/3
+
 on:
   issues:
     types:
@@ -8,7 +11,6 @@ on:
   pull_request:
     types:
       - closed
-      - merged
       - reopened
 
 jobs:
@@ -18,9 +20,9 @@ jobs:
     steps:
       - name: Update issue status to Done when closed
         if: github.event_name == 'issues' && github.event.action == 'closed'
-        uses: titoportas/update-project-fields@v0.1.0
+        uses: titoportas/update-project-fields@421a54430b3cdc9eefd8f14f9ce0142ab7678751
         with:
-          project-url: https://github.com/users/jaodsilv/projects/3
+          project-url: ${{ env.PROJECT_URL }}
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
           item-id: ${{ github.event.issue.node_id }}
           field-keys: Status
@@ -28,9 +30,9 @@ jobs:
 
       - name: Update issue status to Todo when reopened
         if: github.event_name == 'issues' && github.event.action == 'reopened'
-        uses: titoportas/update-project-fields@v0.1.0
+        uses: titoportas/update-project-fields@421a54430b3cdc9eefd8f14f9ce0142ab7678751
         with:
-          project-url: https://github.com/users/jaodsilv/projects/3
+          project-url: ${{ env.PROJECT_URL }}
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
           item-id: ${{ github.event.issue.node_id }}
           field-keys: Status
@@ -38,19 +40,19 @@ jobs:
 
       - name: Update PR status to Done when merged
         if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
-        uses: titoportas/update-project-fields@v0.1.0
+        uses: titoportas/update-project-fields@421a54430b3cdc9eefd8f14f9ce0142ab7678751
         with:
-          project-url: https://github.com/users/jaodsilv/projects/3
+          project-url: ${{ env.PROJECT_URL }}
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
           item-id: ${{ github.event.pull_request.node_id }}
           field-keys: Status
           field-values: Done
 
-      - name: Update PR status to Todo when reopened
+      - name: Update PR status to In Progress when reopened
         if: github.event_name == 'pull_request' && github.event.action == 'reopened'
-        uses: titoportas/update-project-fields@v0.1.0
+        uses: titoportas/update-project-fields@421a54430b3cdc9eefd8f14f9ce0142ab7678751
         with:
-          project-url: https://github.com/users/jaodsilv/projects/3
+          project-url: ${{ env.PROJECT_URL }}
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
           item-id: ${{ github.event.pull_request.node_id }}
           field-keys: Status
