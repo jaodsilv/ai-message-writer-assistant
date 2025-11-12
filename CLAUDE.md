@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Output Formatting Preferences
 - Always use numbered lists instead of bullet points when listing items
+- Use markdown extended formatting for lists and enumerations (see https://www.markdownguide.org/extended-syntax/ if needed)
 - Use numbers (1., 2., 3.) for all lists and enumerations
+- Use tree structure for nested lists and enumerations
 
 ## Application Purpose
 
@@ -13,7 +15,7 @@ AI Message Writer Assistant is designed to help with communication across three 
 2. **Friends**: Personal messaging with appropriate tone and context
 3. **Family**: Warm, personal communications maintaining relationships
 
-## Common Commands
+## Frequently Used Commands
 
 ### Development
 - `npm run dev` - Start development server with HMR (available at http://localhost:5173)
@@ -21,13 +23,58 @@ AI Message Writer Assistant is designed to help with communication across three 
 - `npm run start` - Start production server from build
 - `npm run typecheck` - Run TypeScript type checking and generate types
 
-### Environment Setup
+### Git
+- `git add <file>` - Stage a file
+- `git commit -m "<commit message>"` - Commit changes
+- `git push` - Push changes to remote repository
+- `git pull` - Pull changes from remote repository
+- `git switch -c <branch-name>` - Create a new branch
+- `git switch <branch-name>` - Switch to a branch
+- `git branch --show-current` - Show current branch
+- `git branch -d <branch-name>` - Delete a branch
+- `git status` - List all branches (local and remote)
+- `git diff HEAD` - Merge a branch into the current branch
+
+### Github
+- `gh issue view <issue-number>` - View an issue
+- `gh issue create --title "<title>" --body "<body>"` - Create an issue
+- `gh issue list` - List all issues
+- `gh issue comment <issue-number> --body "<body>"` - Comment on an issue
+- `gh issue close <issue-number>` - Close an issue
+- `gh pr create -a @me -l <labels> -T <template> --title "<title>" --body "<body>"` - Create a pull request
+- `gh pr list` - List all pull requests
+- `gh pr view <pr-number> -c --json "comments" --jq '.comments | map(select(.author.login == "claude")) | last | { id: .id, author: .author.login, body: .body, isMinimized: .isMinimized }'` - Get the latest PR comment from Claude
+- `gh pr merge <pr-number>` - Merge a pull request
+- `gh pr close <pr-number>` - Close a pull request
+- `gh api --method PATCH /repos/jaodsilv/ai-message-writer-assistant/pulls/comments/<comment-id> -f "minimizedReason=RESOLVED" -f 'isMinimized=true'` - Mark a pull request comment as resolved
+
+### Claude
+- `claude -p "/<slash-command>"` - Execute a slash command
+- `claude -p "/<slash-command> <arguments>"` - Execute a slash command with arguments
+
+#### Custom Slash Commands
+- `/add-task <Optional [TaskIndex]|[Github Issue Number]> <TaskDescription>` - Add a new task to the @.llm/todo.md file
+- `/address-pr-comment <PRNumber> <CommentID> <action>` - Address a PR comment by trying to fix a problem pointed in a PR comment
+- `/check-last-pr-comment <PRNumber>` - Parse the last PR comment from Claude and list suggestions for required and/or optional changes
+- `/clean-all-comments` - Scan repo for comments that chould be cleaned up and remove them
+- `/clean-comments` - Scan and edit local code changes that are not yet committed to git and remove comments that are not needed
+- `/commit-push <Optional: Context>` - Commit and push changes to the current branch
+- `/commit <Optional: Context>` - Commit changes to the current branch
+- `/create-pr <Optional: Context>` - Create a pull request
+- `/execute-plan <TaskIndex>` - Execute the plan for a task
+- `/execute-step <StepIndex>` - Execute the next step in the current ongoing plan
+- `/new-branch <TaskIndex>` - Create a new branch for a task
+- `/plan` - Plan a task in the .llm/todo.md file
+- `/switch-master` - Switch to the master branch and delete previous branch
+- `/worktree <TaskIndex>` - Create a worktree for a task
+
+## Environment Setup
 - Requires `.env` file with `ANTHROPIC_API_KEY=your_api_key_here`
 - Never commit `.env` file (already in `.gitignore`)
 
-### GitHub Project Management
+## GitHub Project Management
 - **Project Board**: [AI Message Writer Assistant](https://github.com/users/jaodsilv/projects/3)
-- **Development Plan**: See `DEV_PLAN.md` for detailed roadmap with issue links
+- **Development Plan**: See `.llm/todo.md` for detailed roadmap with issue links
 - **Issue Creation**: Use GitHub issue templates for consistent reporting
 - **Automation**: GitHub Actions automatically add labeled issues/PRs to project board
 
@@ -130,18 +177,21 @@ The application integrates with Anthropic's Claude API through a structured appr
 7. **Network Warm-Up**: Re-engage dormant professional connections
 8. **Professional Achievement Tracker**: Maintain accomplishment database for easy reference
 
-### Development Notes
+## Development Notes
 - Uses React Router v7 with file-based routing
 - Tailwind CSS configured with Vite plugin for optimal performance
 - TypeScript configured with strict mode and path aliases (`~/` → `./app/`)
 - Global Claude API interface declared in `app/types.ts`
 - Error boundaries configured in `app/root.tsx`
 
+### Code style
+- Use ES modules (import/export) syntax, not CommonJS (require)
+- Destructure imports when possible (eg. import { foo } from 'bar')
+
 ### Security Considerations
 - API keys loaded from environment variables only
 - No hardcoded credentials in source code
 - `.env` file excluded from version control
-- Client-side API calls through global `window.claude` interface
 - **API Key Validation**: Verify API key format and test connectivity on startup
 - **Error Handling**: Implement graceful handling of API failures and rate limits
 - **API Key Rotation**: Update `.env` file when rotating keys, restart application to apply changes
@@ -151,7 +201,7 @@ The application integrates with Anthropic's Claude API through a structured appr
 - TypeScript type checking via `npm run typecheck`
 - **Testing Framework**: Vitest + React Testing Library (to be configured in Phase 1)
 - **Test Coverage Target**: >80% coverage for production readiness
-- **Testing Strategy**: Unit tests for components/hooks, integration tests for workflows, E2E tests for critical paths
+- **Testing Strategy**: TDD for any task associated to a GitHub issue. Unit tests for components/hooks, integration tests for workflows, E2E tests for critical paths.
 
 ### Development Workflow
 - **Issue Tracking**: All features tracked as GitHub issues linked to development phases
@@ -159,3 +209,24 @@ The application integrates with Anthropic's Claude API through a structured appr
 - **Phase-Based Development**: See issues [#12-#30](https://github.com/jaodsilv/ai-message-writer-assistant/issues) for detailed implementation plan
 - **Priority Levels**: Critical → High → Medium → Low (automatically set via issue labels)
 - **Status Automation**: Issues/PRs automatically move through Todo → In Progress → Done states
+- **Typechecking**: Be sure to typecheck when you’re done making a series of code changes
+- **Testing**: Prefer running single tests, and not the whole test suite, for performance
+
+### Git Commit Guidelines
+- **Focused Commits**: Only commit files directly related to your current task or change
+- **Staging Discipline**: Use `git add` selectively to stage only relevant files, not `git add .`
+- **Unrelated Changes**: Keep unrelated changes (testing files, config updates, etc.) in separate commits
+- **Clean History**: If you accidentally stage unrelated files, use `git restore --staged <file>` to unstage them
+- **Commit Scope**: Each commit should represent a single, cohesive change that can be reviewed independently
+- **Authoring**: Do NOT add co-authors to the commit message.
+
+### Git Branch naming convention
+- Use a meaningful name based on the Task Description and task type, follow the format `<type>/<task-id>-<meaningful-name>`.
+- Use the following types for the `<type>`:
+  - `feat:` for new features
+  - `fix:` for bug fixes
+  - `docs:` for documentation changes
+  - `style:` for formatting changes
+  - `refactor:` for code refactoring
+  - `test:` for test additions/changes
+  - `chore:` for maintenance tasks
