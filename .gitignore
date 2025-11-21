@@ -11,3 +11,8 @@
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Private data (stored in separate repository)
+/data/
+*.backup.json
+*.export.json
