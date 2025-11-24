@@ -1,9 +1,19 @@
-.DS_Store
+# Dependencies
 /node_modules/
+/.pnp/
+.pnp.js
+.yarn/install-state.gz
 
-# React Router
-/.react-router/
+# Next.js
+/.next/
+/out/
 /build/
+
+# Testing
+/coverage/
+/.nyc_output/
+/playwright-report/
+/test-results/
 
 # Environment variables
 .env
@@ -11,8 +21,39 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env*.local
 
-# Private data (stored in separate repository)
+# Private data (stored in separate encrypted repository)
 /data/
 *.backup.json
 *.export.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Claude Code thoughts
+.thoughts/
+
+# Misc
+*.log
+*.pid
+*.seed
+*.pid.lock
