@@ -3,159 +3,153 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Output Formatting Preferences
-- Always use numbered lists instead of bullet points when listing items
-- Use numbers (1., 2., 3.) for all lists and enumerations
+
+1. Always use numbered lists instead of bullet points when listing items
+2. Use numbers (1., 2., 3.) for all lists and enumerations
 
 ## Application Purpose
 
-AI Message Writer Assistant is designed to help with communication across three main areas:
-1. **Job Hunt Communications**: Professional outreach, follow-ups, and networking with companies
-2. **Friends**: Personal messaging with appropriate tone and context
-3. **Family**: Warm, personal communications maintaining relationships
+AI Message Writer Assistant is a multi-agentic, multi-model AI assistant designed to help craft professional communications, with a focus on:
+
+1. **Job Hunt Communications**: Professional outreach, follow-ups, recruiter communications, and networking
+2. **Work Communications**: Professional emails and messages for workplace scenarios
+3. **Personal Communications**: Messages for friends and family with appropriate tone
 
 ## Common Commands
 
 ### Development
-- `npm run dev` - Start development server with HMR (available at http://localhost:5173)
-- `npm run build` - Build production application
-- `npm run start` - Start production server from build
-- `npm run typecheck` - Run TypeScript type checking and generate types
+
+1. `npm run dev` - Start Next.js development server (http://localhost:3000)
+2. `npm run build` - Build production application
+3. `npm run start` - Start production server
+4. `npm run lint` - Run ESLint
+5. `npm run typecheck` - Run TypeScript type checking
+6. `npm run test` - Run Vitest tests
+7. `npm run test:e2e` - Run Playwright E2E tests
 
 ### Environment Setup
-- Requires `.env` file with `ANTHROPIC_API_KEY=your_api_key_here`
-- Never commit `.env` file (already in `.gitignore`)
 
-### GitHub Project Management
-- **Project Board**: [AI Message Writer Assistant](https://github.com/users/jaodsilv/projects/3)
-- **Development Plan**: See `DEV_PLAN.md` for detailed roadmap with issue links
-- **Issue Creation**: Use GitHub issue templates for consistent reporting
-- **Automation**: GitHub Actions automatically add labeled issues/PRs to project board
+Required environment variables (see `.env.example`):
+
+1. `JWT_SECRET` - Secret key for JWT authentication
+2. `ANTHROPIC_API_KEY` - Claude API key (required)
+3. `OPENAI_API_KEY` - OpenAI API key (optional)
+4. `GOOGLE_AI_API_KEY` - Gemini API key (optional)
+5. `GROQ_API_KEY` - Groq API key (optional)
+6. `MISTRAL_API_KEY` - Mistral API key (optional)
+7. `COHERE_API_KEY` - Cohere API key (optional)
 
 ## Architecture Overview
 
 ### Tech Stack
-- **Framework**: React Router v7 with SSR capabilities
-- **Styling**: Tailwind CSS v4 with Vite plugin
-- **TypeScript**: Strict mode enabled
-- **AI Integration**: Anthropic Claude API via `@anthropic-ai/sdk`
-- **Icons**: Lucide React
-- **Build Tool**: Vite
+
+1. **Framework**: Next.js 15 with App Router
+2. **Language**: TypeScript (strict mode)
+3. **Styling**: Tailwind CSS v3 with Radix UI components
+4. **Authentication**: JWT with bcrypt
+5. **Storage**: Encrypted YAML files (git-crypt)
+6. **LLM Providers**: Claude, OpenAI, Gemini, Groq, Mistral, Cohere
+7. **Testing**: Vitest, React Testing Library, Playwright
 
 ### Project Structure
+
 ```
-app/
-├── claude-api/           # Claude API integration modules
-│   ├── claude-api.tsx   # Core API client configuration
-│   ├── claude-message-writer.tsx
-│   ├── claude-thread-summarizer.tsx
-│   └── prompts.tsx
-├── routes/
-│   └── home.tsx         # Main application UI
-├── root.tsx             # Root layout component
-├── routes.ts            # Route configuration
-├── types.ts             # TypeScript type definitions
-└── app.css              # Global styles
+src/
+├── app/                          # Next.js App Router
+│   ├── (auth)/                   # Auth routes (login, register)
+│   ├── (dashboard)/              # Protected dashboard routes
+│   └── api/                      # API routes
+│       ├── auth/                 # Authentication endpoints
+│       ├── generate/             # Message generation
+│       ├── compare/              # Multi-model comparison
+│       └── debug/                # Debug endpoints
+│
+├── components/                   # React components
+│   ├── ui/                       # Reusable UI components
+│   ├── conversation/             # Conversation components
+│   ├── compose/                  # Message composition
+│   ├── compare/                  # Model comparison
+│   └── debug/                    # Debug visualizations
+│
+├── lib/                          # Core libraries
+│   ├── agents/                   # Multi-agent system
+│   │   ├── orchestrator.ts       # Main orchestrator
+│   │   ├── context-analyzer.ts   # Context analysis
+│   │   ├── tone-calibrator.ts    # Tone calibration
+│   │   ├── content-generator.ts  # Content generation
+│   │   ├── platform-formatter.ts # Platform formatting
+│   │   ├── quality-reviewer.ts   # Quality review
+│   │   ├── job-hunting-specialist.ts
+│   │   ├── memory-manager.ts
+│   │   └── result-combiner.ts
+│   ├── providers/                # LLM provider clients
+│   ├── storage/                  # File-based storage
+│   ├── auth/                     # Authentication utilities
+│   ├── comparison/               # Multi-model comparison
+│   └── debug/                    # Debug utilities
+│
+├── types/                        # TypeScript type definitions
+└── styles/                       # Global styles
 ```
 
-### Key Components and Architecture
+### Multi-Agent System
 
-#### Claude API Integration
-The application integrates with Anthropic's Claude API through a structured approach:
+The application uses a multi-agent architecture for message generation:
 
-- **API Client**: `app/claude-api/claude-api.tsx` contains the main Anthropic SDK configuration
-- **Message Writer**: Core functionality for AI-powered message generation
-- **Thread Summarizer**: Handles conversation context and summarization
-- **Prompt Engineering**: Structured prompts with examples and tool definitions
+1. **Orchestrator**: Coordinates all agents and manages execution flow
+2. **Context Analyzer**: Extracts intent, entities, and sentiment from input
+3. **Tone Calibrator**: Calibrates appropriate tone for the message
+4. **Content Generator**: Generates the main message content
+5. **Platform Formatter**: Formats for specific platforms (email, LinkedIn, etc.)
+6. **Quality Reviewer**: Reviews grammar, clarity, and professionalism
+7. **Job Hunting Specialist**: Provides job-specific strategic advice
+8. **Memory Manager**: Manages conversation memory and context
+9. **Result Combiner**: Combines all agent outputs into final result
 
-#### Application State and Types
-- `app/types.ts` defines comprehensive interfaces for:
-  - `SavedMessage`: Complete message data structure
-  - `ManualEntry`: Manual conversation entries
-  - `Signatures`: Platform-specific signatures
-  - `Tone`, `Platform`, `MessageMode`: Configuration options
-  - Global `window.claude` API interface
+### Multi-Model Comparison
 
-#### UI Architecture
-- **Single Page Application**: Main functionality in `app/routes/home.tsx`
-- **Component Structure**: Large functional component with multiple UI sections
-- **Internationalization**: Built-in translation system with English and Spanish support
-- **Platform Support**: Email, LinkedIn, Support tickets, Custom platforms
-- **Tone Selection**: Professional, Warm, Concise, Formal, Casual, Persuasive
+The system supports parallel generation across multiple LLM providers:
 
-### Key Features
+1. Claude (Anthropic)
+2. GPT-4 (OpenAI)
+3. Gemini (Google)
+4. Llama (Groq)
+5. Mistral
+6. Command (Cohere)
 
-#### Current Features
-1. **AI Message Generation**: Transform raw thoughts into polished messages ✅
-   - [x] **Validated**: Claude API integration works correctly
-   - [x] **Validated**: Tone selection affects AI output
-   - [x] **Validated**: Context input influences AI generation
-2. **Context Awareness**: Support for conversation history and context ✅
-   - [x] **Validated**: Context input influences AI generation
-3. **Multi-Platform**: Email, LinkedIn, support tickets, custom platforms
-   - [ ] **Validation Required**: Verify platform selection affects formatting
-4. **Tone Customization**: Six different tone options ✅
-   - [x] **Validated**: Tone selection affects AI output
-5. **Internationalization**: Multi-language support
-   - [ ] **Validation Required**: Check if translation system switches languages
-6. **Copy-to-Clipboard**: Built-in clipboard functionality
-   - [ ] **Validation Required**: Test copy-to-clipboard functionality
-7. **Keyboard Shortcuts**: Cmd/Ctrl + Enter for generation
-   - [ ] **Validation Required**: Validate keyboard shortcuts (Cmd/Ctrl + Enter)
-
-#### Planned Features
-1. **Import/Export Messages**: Bulk message management and backup
-2. **Thread Division**: Split conversations into logical segments
-3. **Thread Summarization**: AI-powered conversation summaries
-4. **Email Auto-Fetch with Topic Filtering**: Automated email retrieval with smart filtering
-5. **Import/Export Signatures**: Separate signature management system
-6. **Draft Saving in Gmail**: Direct Gmail integration for draft management
-7. **Stored Messages Filtering**: Filter by person (To/CC/From), Company, conversation ID
-8. **Single Page vs Wizard Mode Switch**: Toggle between UI modes
-9. **Manual Message Creation**: Add messages to history manually
-10. **Edit Stored Messages**: Modify saved messages
-11. **Delete Stored Messages**: Remove individual messages
-12. **Delete Stored Threads**: Remove entire conversation threads
-13. **Manual Thread Import/Creation**: Single-step thread creation
-14. **API-Based Thread Import**: Automated thread creation from APIs
-15. **API Integrations**: Gmail, LinkedIn, WhatsApp connectivity
-16. **Dark Mode vs Light Mode Switch**: Toggle between light and dark themes
-
-#### Additional Job Hunt Communication Features (Recommended)
-1. **Follow-up Automation**: Automated follow-up scheduling and reminders
-2. **LinkedIn Connection Tracker**: Track connection requests and responses
-3. **Recruiter Relationship Management**: Maintain recruiter contact history
-4. **Salary Negotiation Assistant**: Generate negotiation messages and strategies
-5. **Reference Request Automation**: Streamline reference request process
-6. **Thank You Note Generator**: Post-interview thank you message automation
-7. **Network Warm-Up**: Re-engage dormant professional connections
-8. **Professional Achievement Tracker**: Maintain accomplishment database for easy reference
-
-### Development Notes
-- Uses React Router v7 with file-based routing
-- Tailwind CSS configured with Vite plugin for optimal performance
-- TypeScript configured with strict mode and path aliases (`~/` → `./app/`)
-- Global Claude API interface declared in `app/types.ts`
-- Error boundaries configured in `app/root.tsx`
+Users can generate responses from all configured providers simultaneously and vote for the best result.
 
 ### Security Considerations
-- API keys loaded from environment variables only
-- No hardcoded credentials in source code
-- `.env` file excluded from version control
-- Client-side API calls through global `window.claude` interface
-- **API Key Validation**: Verify API key format and test connectivity on startup
-- **Error Handling**: Implement graceful handling of API failures and rate limits
-- **API Key Rotation**: Update `.env` file when rotating keys, restart application to apply changes
 
-### Testing and Linting
-- ESLint configured with React app presets
-- TypeScript type checking via `npm run typecheck`
-- **Testing Framework**: Vitest + React Testing Library (to be configured in Phase 1)
-- **Test Coverage Target**: >80% coverage for production readiness
-- **Testing Strategy**: Unit tests for components/hooks, integration tests for workflows, E2E tests for critical paths
+1. API keys stored in environment variables only
+2. JWT authentication with bcrypt password hashing
+3. Data encrypted using git-crypt
+4. Security headers configured in Next.js
+5. Input validation using Zod schemas
+
+### Accessibility Features
+
+Designed for neurodivergent users (dyslexia, ADHD, autism):
+
+1. Clean, uncluttered layouts
+2. High contrast mode option
+3. Dyslexia-friendly font options
+4. Adjustable spacing
+5. Reduced motion option
+6. Focus mode
+7. Keyboard shortcuts
+8. Clear visual hierarchy
+
+### Testing Strategy
+
+1. Unit tests for components and utilities
+2. Integration tests for API routes
+3. E2E tests for critical user flows
+4. Target: >80% code coverage
 
 ### Development Workflow
-- **Issue Tracking**: All features tracked as GitHub issues linked to development phases
-- **Project Management**: Automated GitHub Actions workflow for issue/PR management
-- **Phase-Based Development**: See issues [#12-#30](https://github.com/jaodsilv/ai-message-writer-assistant/issues) for detailed implementation plan
-- **Priority Levels**: Critical → High → Medium → Low (automatically set via issue labels)
-- **Status Automation**: Issues/PRs automatically move through Todo → In Progress → Done states
+
+1. Follow the coding task workflow in `.claude/shared/coding-task-workflow.md`
+2. Use TDD approach for new features
+3. All features tracked as GitHub issues
+4. PR reviews required before merge
