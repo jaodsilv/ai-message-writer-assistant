@@ -1,9 +1,9 @@
 .DS_Store
-/node_modules/
+node_modules
 
 # React Router
 /.react-router/
-/build/
+build
 
 # Environment variables
 .env
@@ -13,6 +13,6 @@
 .env.production.local
 
 # Private data (stored in separate repository)
-/data/
+data
 *.backup.json
 *.export.json
