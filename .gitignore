@@ -1,8 +1,9 @@
 .DS_Store
 node_modules
 
+
 # React Router
-/.react-router/
+.react-router/
 build
 
 # Environment variables
@@ -16,3 +17,7 @@ build
 data
 *.backup.json
 *.export.json
+
+# Scratchpads and temp files
+.thoughts/
+test_output*.txt
