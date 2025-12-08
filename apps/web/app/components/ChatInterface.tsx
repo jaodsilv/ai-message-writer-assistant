@@ -28,6 +28,8 @@ interface ChatInterfaceProps {
   onToggleArchived: () => void;
   canUndo: boolean;
   availableModels?: { value: string; displayName: string }[];
+  onEditMessage: (message: Message, newContent: string) => void;
+  onDeleteMessage: (message: Message) => void;
 }
 
 export function ChatInterface({
@@ -52,7 +54,9 @@ export function ChatInterface({
   showArchived,
   onToggleArchived,
   canUndo,
-  availableModels
+  availableModels,
+  onEditMessage,
+  onDeleteMessage
 }: ChatInterfaceProps) {
   const [input, setInput] = useState('');
   const [selectedWriterType, setSelectedWriterType] = useState<'ai' | 'person'>('ai');
@@ -60,6 +64,7 @@ export function ChatInterface({
   const [selectedPerson, setSelectedPerson] = useState('me');
   const [showParseModal, setShowParseModal] = useState(false);
   const [parseText, setParseText] = useState('');
+  const [editingMessage, setEditingMessage] = useState<{ index: number; content: string } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -90,6 +95,21 @@ export function ChatInterface({
       setParseText('');
       setShowParseModal(false);
     }
+  };
+
+  const startEditing = (index: number, content: string) => {
+    setEditingMessage({ index, content });
+  };
+
+  const saveEdit = (message: Message) => {
+    if (editingMessage && editingMessage.content.trim()) {
+      onEditMessage(message, editingMessage.content);
+      setEditingMessage(null);
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingMessage(null);
   };
 
   return (
@@ -162,15 +182,59 @@ export function ChatInterface({
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} group`}
             >
               <div
-                className={`max-w-[80%] p-4 rounded-lg shadow-sm ${msg.role === 'user'
+                className={`max-w-[80%] p-4 rounded-lg shadow-sm relative ${msg.role === 'user'
                   ? 'bg-blue-600 text-white'
                   : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
                   }`}
               >
-                <p className="whitespace-pre-wrap leading-relaxed text-lg">{msg.content}</p>
+                {editingMessage?.index === index ? (
+                  <div className="flex flex-col gap-2">
+                    <textarea
+                      value={editingMessage.content}
+                      onChange={(e) => setEditingMessage({ ...editingMessage, content: e.target.value })}
+                      className="w-full p-2 text-gray-900 bg-white rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                      rows={3}
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={cancelEdit}
+                        className="px-2 py-1 text-sm text-gray-600 bg-gray-100 rounded hover:bg-gray-200"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => saveEdit(msg)}
+                        className="px-2 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600"
+                        title="Save Edit"
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="whitespace-pre-wrap leading-relaxed text-lg">{msg.content}</p>
+                    <div className={`absolute top-2 ${msg.role === 'user' ? 'left-2' : 'right-2'} opacity-0 group-hover:opacity-100 transition-opacity flex gap-1`}>
+                      <button
+                        onClick={() => startEditing(index, msg.content)}
+                        className={`p-1 rounded ${msg.role === 'user' ? 'text-white hover:bg-blue-500' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                        title="Edit Message"
+                      >
+                        <FileText size={14} />
+                      </button>
+                      <button
+                        onClick={() => onDeleteMessage(msg)}
+                        className={`p-1 rounded ${msg.role === 'user' ? 'text-white hover:bg-blue-500' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                        title="Delete Message"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           ))}

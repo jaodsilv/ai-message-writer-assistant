@@ -216,6 +216,29 @@ export async function action({ request }: Route.ActionArgs) {
     return redirect(`/chat?id=${newId}`);
   }
 
+  if (intent === 'editMessage') {
+    const messageIndex = parseInt(formData.get('messageIndex') as string);
+    const newContent = formData.get('newContent') as string;
+
+    if (conversation.messages[messageIndex]) {
+      conversation.messages[messageIndex].content = newContent;
+      conversation.updatedAt = new Date().toISOString();
+      await memoryManager.saveConversation(conversation);
+    }
+    return { success: true };
+  }
+
+  if (intent === 'deleteMessage') {
+    const messageIndex = parseInt(formData.get('messageIndex') as string);
+
+    if (conversation.messages[messageIndex]) {
+      conversation.messages.splice(messageIndex, 1);
+      conversation.updatedAt = new Date().toISOString();
+      await memoryManager.saveConversation(conversation);
+    }
+    return { success: true };
+  }
+
   return { error: 'Unknown intent' };
 }
 
@@ -350,6 +373,43 @@ export default function ChatRoute({ loaderData }: Route.ComponentProps) {
     }
   };
 
+  const handleEditMessage = async (message: Message, newContent: string) => {
+    const index = messages.indexOf(message);
+    if (index === -1) return;
+
+    // Optimistic update
+    const newMessages = [...messages];
+    newMessages[index] = { ...message, content: newContent };
+    setMessages(newMessages);
+
+    const formData = new FormData();
+    formData.append('intent', 'editMessage');
+    formData.append('conversationId', conversationId);
+    formData.append('messageIndex', index.toString());
+    formData.append('newContent', newContent);
+    await fetch('/chat', { method: 'POST', body: formData });
+    window.location.reload();
+  };
+
+  const handleDeleteMessage = async (message: Message) => {
+    if (!confirm('Are you sure you want to delete this message?')) return;
+
+    const index = messages.indexOf(message);
+    if (index === -1) return;
+
+    // Optimistic update
+    const newMessages = [...messages];
+    newMessages.splice(index, 1);
+    setMessages(newMessages);
+
+    const formData = new FormData();
+    formData.append('intent', 'deleteMessage');
+    formData.append('conversationId', conversationId);
+    formData.append('messageIndex', index.toString());
+    await fetch('/chat', { method: 'POST', body: formData });
+    window.location.reload();
+  };
+
   return (
     <ChatInterface
       messages={messages}
@@ -378,6 +438,8 @@ export default function ChatRoute({ loaderData }: Route.ComponentProps) {
       }}
       canUndo={loaderData.canUndo}
       availableModels={loaderData.availableModels}
+      onEditMessage={handleEditMessage}
+      onDeleteMessage={handleDeleteMessage}
     />
   );
 }
