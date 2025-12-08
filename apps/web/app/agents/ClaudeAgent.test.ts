@@ -3,36 +3,44 @@ import { ClaudeAgent } from './ClaudeAgent';
 import { Message } from './ModelInterface';
 
 describe('ClaudeAgent', () => {
-    it('should initialize with correct properties', () => {
-        const apiKey = 'test-api-key';
-        const agent = new ClaudeAgent(apiKey);
+  it('should initialize with correct properties', () => {
+    const agent = new ClaudeAgent();
 
-        expect(agent.id).toBe('claude');
-        expect(agent.name).toBe('Claude');
-        expect(agent.provider).toBe('claude');
-    });
+    expect(agent.id).toBe('claude');
+    expect(agent.name).toBe('Claude');
+    expect(agent.provider).toBe('claude');
+  });
 
-    it('should generate a response', async () => {
-        const apiKey = 'test-api-key';
-        const agent = new ClaudeAgent(apiKey);
-        const messages: Message[] = [
-            { role: 'user', content: 'Hello' }
-        ];
+  it('should generate a response', async () => {
+    const mockQuery = vi.hoisted(() => vi.fn());
+    vi.mock('@anthropic-ai/claude-agent-sdk', () => ({
+      query: mockQuery
+    }));
 
-        const response = await agent.generateResponse(messages);
-        expect(response).toContain('[Claude] Response to: Hello');
-    });
+    const mockStream = (async function* () {
+      yield { type: 'result', subtype: 'success', result: 'Mocked response' };
+    })();
+    mockQuery.mockReturnValue(mockStream);
 
-    it('should handle empty messages gracefully', async () => {
-        const apiKey = 'test-api-key';
-        const agent = new ClaudeAgent(apiKey);
-        // @ts-ignore - testing invalid input
-        const messages: Message[] = [];
+    const agent = new ClaudeAgent();
+    const messages: Message[] = [
+      { role: 'user', content: 'Hello' }
+    ];
 
-        // The current implementation might throw or return undefined if accessing index -1
-        // Let's see how it behaves. Based on code: messages[messages.length - 1].content
-        // This will throw if empty.
+    const response = await agent.generateResponse(messages);
+    expect(response).toBe('Mocked response');
+  });
 
-        await expect(agent.generateResponse(messages)).rejects.toThrow();
-    });
+  it('should handle empty messages gracefully', async () => {
+    const agent = new ClaudeAgent();
+    const messages: Message[] = [];
+
+    // The implementation returns '' if messages is empty (line 13)
+    // But line 11 accesses messages[messages.length - 1] which is undefined
+    // Then line 12 checks !lastMessage which is true
+    // Then line 13 checks messages.length === 0 which is true, returns ''
+
+    const response = await agent.generateResponse(messages);
+    expect(response).toBe('');
+  });
 });

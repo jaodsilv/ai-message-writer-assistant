@@ -53,7 +53,7 @@ export class ClaudeAgent implements ModelInterface {
       // We don't need to iterate over the stream for this
       const q = query({ prompt: '' });
       const models = await q.supportedModels();
-      console.log('Supported models:', JSON.stringify(models, null, 2));
+
 
       return models.map(model => ({
         value: model.value,

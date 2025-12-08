@@ -56,7 +56,7 @@ export function ChatInterface({
 }: ChatInterfaceProps) {
   const [input, setInput] = useState('');
   const [selectedWriterType, setSelectedWriterType] = useState<'ai' | 'person'>('ai');
-  const [selectedModel, setSelectedModel] = useState('claude-3-5-sonnet-20241022');
+  const [selectedModel, setSelectedModel] = useState('');
   const [selectedPerson, setSelectedPerson] = useState('me');
   const [showParseModal, setShowParseModal] = useState(false);
   const [parseText, setParseText] = useState('');
