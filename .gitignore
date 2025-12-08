@@ -21,3 +21,4 @@ data
 # Scratchpads and temp files
 .thoughts/
 test_output*.txt
+test_chat_output.txt
