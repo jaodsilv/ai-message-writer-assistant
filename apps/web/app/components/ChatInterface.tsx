@@ -217,7 +217,7 @@ export function ChatInterface({
                 ) : (
                   <>
                     <p className="whitespace-pre-wrap leading-relaxed text-lg">{msg.content}</p>
-                    <div className={`absolute top-2 ${msg.role === 'user' ? 'left-2' : 'right-2'} opacity-0 group-hover:opacity-100 transition-opacity flex gap-1`}>
+                    <div className={`absolute top-2 ${msg.role === 'user' ? 'left-2' : 'right-2'} flex gap-1`}>
                       <button
                         onClick={() => startEditing(index, msg.content)}
                         className={`p-1 rounded ${msg.role === 'user' ? 'text-white hover:bg-blue-500' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
