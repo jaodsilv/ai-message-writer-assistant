@@ -8,12 +8,34 @@ export class ClaudeAgent implements ModelInterface {
   constructor() { }
 
   async generateResponse(messages: Message[], _context?: any, model?: string): Promise<string> {
-    const lastMessage = messages[messages.length - 1];
-    if (!lastMessage || lastMessage.role !== 'user') {
-      if (messages.length === 0) return '';
+    const writerName = _context?.writerName || 'Assistant';
+    const contextItems = _context?.context || [];
+    const jobDescription = _context?.jobDescription || '';
+
+    // Format conversation history
+    const history = messages.map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`).join('\n\n');
+
+    // Construct the prompt
+    let prompt = `You are acting as ${writerName}. Your task is to draft a response to the last message in the conversation below.\n\n`;
+
+    if (jobDescription) {
+      prompt += `Job Description Context:\n${jobDescription}\n\n`;
     }
 
-    const prompt = lastMessage?.content || '';
+    if (contextItems.length > 0) {
+      prompt += `Additional Context:\n${contextItems.join('\n')}\n\n`;
+    }
+
+    prompt += `Conversation History:\n${history}\n\n`;
+
+    prompt += `Instructions:
+1. Draft a direct response to the last message.
+2. Do NOT act as a conversational assistant (e.g., do not say "Here is a draft").
+3. Output ONLY the draft response text.
+4. Maintain a professional but conversational tone appropriate for ${writerName}.
+5. Use the provided context to inform your response.
+
+Draft Response:`;
 
     try {
       const stream = query({
