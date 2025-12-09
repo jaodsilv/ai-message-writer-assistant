@@ -83,7 +83,8 @@ export async function action({ request }: Route.ActionArgs) {
     if (writerType === 'ai') {
       const agentContext = {
         context: conversation.metadata?.context,
-        jobDescription: conversation.metadata?.jobDescription
+        jobDescription: conversation.metadata?.jobDescription,
+        writerName
       };
 
       const agentId = 'claude';
@@ -219,9 +220,35 @@ export async function action({ request }: Route.ActionArgs) {
   if (intent === 'editMessage') {
     const messageIndex = parseInt(formData.get('messageIndex') as string);
     const newContent = formData.get('newContent') as string;
+    const sender = formData.get('sender') as string | null;
+    const recipientsJson = formData.get('recipients') as string | null;
 
     if (conversation.messages[messageIndex]) {
       conversation.messages[messageIndex].content = newContent;
+
+      // Update sender if provided
+      if (sender) {
+        conversation.messages[messageIndex].sender = sender;
+      } else {
+        delete conversation.messages[messageIndex].sender;
+      }
+
+      // Update recipients if provided
+      if (recipientsJson) {
+        try {
+          const recipients = JSON.parse(recipientsJson);
+          if (Array.isArray(recipients) && recipients.length > 0) {
+            conversation.messages[messageIndex].recipients = recipients;
+          } else {
+            delete conversation.messages[messageIndex].recipients;
+          }
+        } catch (e) {
+          delete conversation.messages[messageIndex].recipients;
+        }
+      } else {
+        delete conversation.messages[messageIndex].recipients;
+      }
+
       conversation.updatedAt = new Date().toISOString();
       await memoryManager.saveConversation(conversation);
     }
@@ -373,13 +400,18 @@ export default function ChatRoute({ loaderData }: Route.ComponentProps) {
     }
   };
 
-  const handleEditMessage = async (message: Message, newContent: string) => {
+  const handleEditMessage = async (message: Message, newContent: string, sender?: string, recipients?: string[]) => {
     const index = messages.indexOf(message);
     if (index === -1) return;
 
     // Optimistic update
     const newMessages = [...messages];
-    newMessages[index] = { ...message, content: newContent };
+    newMessages[index] = {
+      ...message,
+      content: newContent,
+      sender,
+      recipients
+    };
     setMessages(newMessages);
 
     const formData = new FormData();
@@ -387,6 +419,8 @@ export default function ChatRoute({ loaderData }: Route.ComponentProps) {
     formData.append('conversationId', conversationId);
     formData.append('messageIndex', index.toString());
     formData.append('newContent', newContent);
+    if (sender) formData.append('sender', sender);
+    if (recipients && recipients.length > 0) formData.append('recipients', JSON.stringify(recipients));
     await fetch('/chat', { method: 'POST', body: formData });
     window.location.reload();
   };

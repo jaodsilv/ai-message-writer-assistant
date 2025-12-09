@@ -28,7 +28,7 @@ interface ChatInterfaceProps {
   onToggleArchived: () => void;
   canUndo: boolean;
   availableModels?: { value: string; displayName: string }[];
-  onEditMessage: (message: Message, newContent: string) => void;
+  onEditMessage: (message: Message, newContent: string, sender?: string, recipients?: string[]) => void;
   onDeleteMessage: (message: Message) => void;
 }
 
@@ -64,7 +64,7 @@ export function ChatInterface({
   const [selectedPerson, setSelectedPerson] = useState('me');
   const [showParseModal, setShowParseModal] = useState(false);
   const [parseText, setParseText] = useState('');
-  const [editingMessage, setEditingMessage] = useState<{ index: number; content: string } | null>(null);
+  const [editingMessage, setEditingMessage] = useState<{ index: number; content: string; sender: string; recipients: string[] } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -97,19 +97,60 @@ export function ChatInterface({
     }
   };
 
-  const startEditing = (index: number, content: string) => {
-    setEditingMessage({ index, content });
+  const startEditing = (index: number, message: Message) => {
+    setEditingMessage({
+      index,
+      content: message.content,
+      sender: message.sender || '',
+      recipients: message.recipients || []
+    });
   };
 
   const saveEdit = (message: Message) => {
     if (editingMessage && editingMessage.content.trim()) {
-      onEditMessage(message, editingMessage.content);
+      onEditMessage(
+        message,
+        editingMessage.content,
+        editingMessage.sender || undefined,
+        editingMessage.recipients.length > 0 ? editingMessage.recipients : undefined
+      );
       setEditingMessage(null);
     }
   };
 
   const cancelEdit = () => {
     setEditingMessage(null);
+  };
+
+  const addRecipient = () => {
+    if (editingMessage) {
+      setEditingMessage({
+        ...editingMessage,
+        recipients: [...editingMessage.recipients, '']
+      });
+    }
+  };
+
+  const updateRecipient = (index: number, value: string) => {
+    if (editingMessage) {
+      const newRecipients = [...editingMessage.recipients];
+      newRecipients[index] = value;
+      setEditingMessage({
+        ...editingMessage,
+        recipients: newRecipients
+      });
+    }
+  };
+
+  const removeRecipient = (index: number) => {
+    if (editingMessage) {
+      const newRecipients = [...editingMessage.recipients];
+      newRecipients.splice(index, 1);
+      setEditingMessage({
+        ...editingMessage,
+        recipients: newRecipients
+      });
+    }
   };
 
   return (
@@ -191,13 +232,59 @@ export function ChatInterface({
                   }`}
               >
                 {editingMessage?.index === index ? (
-                  <div className="flex flex-col gap-2">
-                    <textarea
-                      value={editingMessage.content}
-                      onChange={(e) => setEditingMessage({ ...editingMessage, content: e.target.value })}
-                      className="w-full p-2 text-gray-900 bg-white rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
-                      rows={3}
-                    />
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Content</label>
+                      <textarea
+                        value={editingMessage.content}
+                        onChange={(e) => setEditingMessage({ ...editingMessage, content: e.target.value })}
+                        className="w-full p-2 text-gray-900 bg-white rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                        rows={3}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Sender</label>
+                      <input
+                        type="text"
+                        value={editingMessage.sender}
+                        onChange={(e) => setEditingMessage({ ...editingMessage, sender: e.target.value })}
+                        placeholder="e.g., john@example.com or John Doe"
+                        className="w-full p-2 text-gray-900 bg-white rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                      />
+                    </div>
+                    <div>
+                      <div className="flex justify-between items-center mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Recipients</label>
+                        <button
+                          onClick={addRecipient}
+                          className="px-2 py-1 text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                          type="button"
+                        >
+                          + Add Recipient
+                        </button>
+                      </div>
+                      {editingMessage.recipients.map((recipient, idx) => (
+                        <div key={idx} className="flex gap-2 mb-2">
+                          <input
+                            type="text"
+                            value={recipient}
+                            onChange={(e) => updateRecipient(idx, e.target.value)}
+                            placeholder="e.g., jane@example.com or Jane Doe"
+                            className="flex-1 p-2 text-gray-900 bg-white rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                          />
+                          <button
+                            onClick={() => removeRecipient(idx)}
+                            className="px-2 py-1 text-sm text-red-600 hover:text-red-700 bg-red-50 rounded hover:bg-red-100"
+                            type="button"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                      {editingMessage.recipients.length === 0 && (
+                        <p className="text-sm text-gray-500 dark:text-gray-400 italic">No recipients added</p>
+                      )}
+                    </div>
                     <div className="flex justify-end gap-2">
                       <button
                         onClick={cancelEdit}
@@ -219,7 +306,7 @@ export function ChatInterface({
                     <p className="whitespace-pre-wrap leading-relaxed text-lg">{msg.content}</p>
                     <div className={`absolute top-2 ${msg.role === 'user' ? 'left-2' : 'right-2'} flex gap-1`}>
                       <button
-                        onClick={() => startEditing(index, msg.content)}
+                        onClick={() => startEditing(index, msg)}
                         className={`p-1 rounded ${msg.role === 'user' ? 'text-white hover:bg-blue-500' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
                         title="Edit Message"
                       >

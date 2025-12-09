@@ -2,6 +2,8 @@ export interface Message {
   id?: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
+  sender?: string;
+  recipients?: string[];
 }
 
 export interface ModelInterface {

@@ -152,6 +152,8 @@ describe('Chat Route', () => {
       formData.append('conversationId', 'conv-1');
       formData.append('messageIndex', '0');
       formData.append('newContent', 'edited content');
+      formData.append('sender', 'john@example.com');
+      formData.append('recipients', JSON.stringify(['jane@example.com', 'bob@example.com']));
 
       const request = new Request('http://localhost/chat', {
         method: 'POST',
@@ -169,6 +171,8 @@ describe('Chat Route', () => {
 
       expect(result).toEqual({ success: true });
       expect(mockConversation.messages[0].content).toBe('edited content');
+      expect(mockConversation.messages[0].sender).toBe('john@example.com');
+      expect(mockConversation.messages[0].recipients).toEqual(['jane@example.com', 'bob@example.com']);
       expect(mockServices.memoryManager.saveConversation).toHaveBeenCalledWith(mockConversation);
     });
 
