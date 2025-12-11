@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(git-crypt:*)",
+      "Bash(python:*)",
+      "Bash(.venvScriptspip install -r backendrequirements.txt -r backendrequirements-dev.txt)",
+      "Bash(/d/src/ai-message-writer-assistant/v2/venv/Scripts/python.exe -m pytest:*)",
+      "Bash(/d/src/ai-message-writer-assistant/v2/venv/Scripts/python.exe -m black:*)",
+      "Bash(/d/src/ai-message-writer-assistant/v2/venv/Scripts/python.exe -m mypy:*)",
+      "Bash(git worktree:*)"
+    ]
+  }
+}
