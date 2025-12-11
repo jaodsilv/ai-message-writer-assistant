@@ -8,7 +8,16 @@
       "Bash(/d/src/ai-message-writer-assistant/v2/venv/Scripts/python.exe -m pytest:*)",
       "Bash(/d/src/ai-message-writer-assistant/v2/venv/Scripts/python.exe -m black:*)",
       "Bash(/d/src/ai-message-writer-assistant/v2/venv/Scripts/python.exe -m mypy:*)",
-      "Bash(git worktree:*)"
+      "Bash(git worktree:*)",
+      "Bash(test:*)",
+      "Bash(\"D:/src/ai-message-writer-assistant/v2/venv/Scripts/python.exe\" -m pytest tests/unit/models/ -v --tb=short)",
+      "Bash(\"D:/src/ai-message-writer-assistant/v2/venv/Scripts/python.exe\" -m pytest tests/integration/models/ -v --tb=short)",
+      "Bash(\"D:/src/ai-message-writer-assistant/v2/venv/Scripts/python.exe\" -m pytest tests/ -v --tb=short)",
+      "Bash(\"D:/src/ai-message-writer-assistant/v2/venv/Scripts/python.exe\" -m black:*)",
+      "Bash(\"D:/src/ai-message-writer-assistant/v2/venv/Scripts/python.exe\" -m mypy:*)",
+      "Bash(\"D:/src/ai-message-writer-assistant/v2/venv/Scripts/python.exe\" -m pytest tests/ --tb=short)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat(models): implement core Pydantic data models\n\nAdd Platform, ProcessStatus, ParticipantRole enums\nAdd Message, Participant models\nAdd SentimentTrend, ConversationStage, ActionItems, ContextAnalysis\nAdd JobFitScore with 0-100 range validation, ResponseMetrics models\nAdd Conversation model with nested model support\nAdd UserSettings model\nComprehensive validation and type hints\n282 tests with 89% overall coverage (100% on models)\nEOF\n)\")"
     ]
   }
 }
