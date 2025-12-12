@@ -24,14 +24,14 @@ jobs:
   add-to-project:
     runs-on: ubuntu-latest
     if: contains(github.event.issue.labels.*.name, 'enhancement') || contains(github.event.issue.labels.*.name, 'feature') || contains(github.event.issue.labels.*.name, 'bug')
-    
+
     steps:
       - name: Validate PAT token exists
         if: ${{ secrets.ADD_TO_PROJECT_PAT == '' }}
         run: |
           echo "::error::ADD_TO_PROJECT_PAT secret is not configured"
           exit 1
-          
+
       - name: Add issue to project
         id: add-issue
         uses: actions/add-to-project@31b3f5e6ca06068c05348da1fb8ab4e5fe1ad2c7
@@ -39,7 +39,7 @@ jobs:
           project-url: ${{ env.PROJECT_URL }}
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
         continue-on-error: true
-        
+
       - name: Handle add-to-project failure
         if: steps.add-issue.outcome == 'failure'
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: add-to-project
     if: needs.add-to-project.result == 'success' && (contains(github.event.issue.labels.*.name, 'critical') || contains(github.event.issue.labels.*.name, 'high') || contains(github.event.issue.labels.*.name, 'medium') || contains(github.event.issue.labels.*.name, 'low'))
-    
+
     steps:
       - name: Set priority based on labels
         id: set-priority
@@ -68,7 +68,7 @@ jobs:
           item-id: ${{ github.event.issue.node_id }}
           field-keys: Priority
           field-values: |
-            ${{ 
+            ${{
               contains(github.event.issue.labels.*.name, 'critical') && 'Critical' ||
               contains(github.event.issue.labels.*.name, 'high') && 'High' ||
               contains(github.event.issue.labels.*.name, 'medium') && 'Medium' ||
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: add-to-project
     if: needs.add-to-project.result == 'success' && (contains(github.event.issue.labels.*.name, 'phase-1') || contains(github.event.issue.labels.*.name, 'phase-2') || contains(github.event.issue.labels.*.name, 'phase-3') || contains(github.event.issue.labels.*.name, 'phase-4') || contains(github.event.issue.labels.*.name, 'phase-5'))
-    
+
     steps:
       - name: Set phase based on labels
         id: set-phase
@@ -92,7 +92,7 @@ jobs:
           item-id: ${{ github.event.issue.node_id }}
           field-keys: Type
           field-values: |
-            ${{ 
+            ${{
               contains(github.event.issue.labels.*.name, 'phase-1') && 'Phase 1: Foundation' ||
               contains(github.event.issue.labels.*.name, 'phase-2') && 'Phase 2: State Management' ||
               contains(github.event.issue.labels.*.name, 'phase-3') && 'Phase 3: Core Features' ||
