@@ -75,3 +75,5 @@ logs/
 
 # Ruff
 .ruff_cache/
+data/
+nul
