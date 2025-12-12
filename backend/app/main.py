@@ -11,11 +11,6 @@ from fastapi.responses import JSONResponse
 from app.config import get_settings
 from app.core.exceptions import AppException
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-)
 logger = logging.getLogger(__name__)
 
 # Get settings
@@ -25,6 +20,11 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan manager for startup and shutdown events."""
+    # Configure logging at startup
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
     # Startup
     logger.info(
         f"Starting {settings.app_name} API v{settings.app_version} "
@@ -43,8 +43,8 @@ app = FastAPI(
     title="AI Message Writer Assistant API",
     description="Backend API for intelligent recruitment communication",
     version=settings.app_version,
-    docs_url="/api/docs",
-    redoc_url="/api/redoc",
+    docs_url="/api/docs" if settings.env != "production" else None,
+    redoc_url="/api/redoc" if settings.env != "production" else None,
     lifespan=lifespan,
 )
 
@@ -53,8 +53,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
 )
 
 

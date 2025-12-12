@@ -34,8 +34,7 @@ class Settings(BaseSettings):
         """Parse CORS origins string into list."""
         return [origin.strip() for origin in self.cors_origins.split(",")]
 
-    # Anthropic Claude
-    anthropic_api_key: str = ""
+    # Claude Configuration (uses Claude Code local setup)
     default_model: str = "sonnet"
     max_tokens: int = 4096
     temperature: float = 1.0

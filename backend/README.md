@@ -159,6 +159,25 @@ Additional endpoints will be added as the application develops:
 - `/api/v1/analysis` - Context analysis
 - `/api/v1/settings` - User settings
 
+
+## Design Decisions
+
+### Pre-commit Tools
+
+We use **flake8** instead of ruff for linting. While ruff offers better performance, flake8's simpler configuration and established ecosystem is sufficient for this small codebase. This is an intentional choice to avoid over-engineering.
+
+### Data Directory
+
+The `data/` directory is **tracked in git** (not gitignored) but encrypted via **git-crypt**. This enables secure storage of sensitive conversation data and research cache while maintaining version control.
+
+### Async Endpoints
+
+Simple endpoints like `/health` and `/` are marked async but don't perform async I/O operations. This is intentional and acceptable for simple operations. Future endpoints that interact with external services (Claude API, external APIs) should properly utilize async I/O patterns.
+
+### Settings Caching
+
+`get_settings()` uses `@lru_cache` to avoid repeated environment variable parsing on every request. This is the recommended Pydantic Settings pattern for performance optimization.
+
 ## License
 
 MIT

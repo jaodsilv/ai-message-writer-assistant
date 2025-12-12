@@ -24,6 +24,5 @@ async def async_client() -> AsyncClient:
 def test_settings() -> dict:
     """Provide test settings override."""
     return {
-        "anthropic_api_key": "test-key",
         "env": "test",
     }

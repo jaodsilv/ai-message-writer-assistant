@@ -27,8 +27,6 @@ services:
       - ./data:/app/data
       # Mount logs directory
       - ./logs:/app/logs
-      # Mount prompts for development
-      - ./backend/prompts:/app/prompts:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
