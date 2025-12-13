@@ -28,7 +28,7 @@ Create a Personal Access Token (PAT) with the following permissions:
 4. Set expiration as needed
 5. Grant the following permissions:
    - **Issues**: Read and write
-   - **Pull requests**: Read and write  
+   - **Pull requests**: Read and write
    - **Projects**: Write
    - **Metadata**: Read
 
@@ -48,7 +48,7 @@ Create a Personal Access Token (PAT) with the following permissions:
 - **Labels that trigger**: `enhancement`, `feature`, `bug`
 - **Additional**: Sets priority and phase fields based on labels
 
-### `add-prs-to-project.yml` 
+### `add-prs-to-project.yml`
 - **Triggers**: When pull requests are opened or labeled
 - **Function**: Automatically adds PRs to Project 3 and sets status to "In Progress"
 - **Labels that trigger**: `enhancement`, `feature`, `bug`, `hotfix`
@@ -58,7 +58,7 @@ Create a Personal Access Token (PAT) with the following permissions:
 - **Function**: Updates project status fields automatically
 - **Status Updates**:
   - Closed issues → "Done"
-  - Merged PRs → "Done" 
+  - Merged PRs → "Done"
   - Reopened issues → "Todo"
   - Reopened PRs → "In Progress"
 
@@ -82,14 +82,14 @@ The workflows use labels to determine:
 
 ### Priority Mapping
 - `critical` → Critical priority
-- `high` → High priority  
+- `high` → High priority
 - `medium` → Medium priority
 - `low` → Low priority
 
 ### Phase Mapping
 - `phase-1` → "Phase 1: Foundation"
 - `phase-2` → "Phase 2: State Management"
-- `phase-3` → "Phase 3: Core Features" 
+- `phase-3` → "Phase 3: Core Features"
 - `phase-4` → "Phase 4: Advanced Features"
 - `phase-5` → "Phase 5: Polish"
 
@@ -98,7 +98,7 @@ The workflows use labels to determine:
 Once the PAT is configured, the workflows will automatically:
 
 1. **Add new issues/PRs** with relevant labels to the project
-2. **Set priority levels** based on priority labels  
+2. **Set priority levels** based on priority labels
 3. **Categorize by development phase** using phase labels
 4. **Update status** when items are closed, merged, or reopened
 5. **Provide structured templates** for consistent issue creation

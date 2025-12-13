@@ -1,0 +1,57 @@
+# AI Message Writer Assistant v2 - Docker Compose Configuration
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-message-writer-backend
+    ports:
+      - "${API_PORT:-8000}:8000"
+    environment:
+      - APP_NAME=${APP_NAME:-ai-message-writer-assistant}
+      - APP_VERSION=${APP_VERSION:-2.0.0}
+      - ENV=${ENV:-development}
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - DEFAULT_MODEL=${DEFAULT_MODEL:-sonnet}
+      - MAX_TOKENS=${MAX_TOKENS:-4096}
+      - TEMPERATURE=${TEMPERATURE:-1.0}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - DATA_DIR=/app/data
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://localhost:5173}
+    volumes:
+      # Mount data directory for persistence
+      - ./data:/app/data
+      # Mount logs directory
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Frontend service (placeholder - to be implemented)
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   container_name: ai-message-writer-frontend
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - backend
+  #   environment:
+  #     - VITE_API_URL=http://localhost:8000
+
+networks:
+  default:
+    name: ai-message-writer-network
+
+volumes:
+  data:
+  logs:
