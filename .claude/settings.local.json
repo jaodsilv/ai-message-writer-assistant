@@ -17,7 +17,8 @@
       "Bash(python -m pytest tests/ --tb=short)",
       "Bash(git add:*)",
       "Bash(gh pr view:*)",
-      "Bash(gh pr diff:*)"
+      "Bash(gh pr diff:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
