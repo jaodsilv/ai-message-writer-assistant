@@ -660,13 +660,13 @@ class FileHandler:
             - On Windows: The actual file creation time
             - On Unix/Linux: The last metadata change time (inode change)
         """
-        if not path.exists():
-            raise AppFileNotFoundError(
-                message=f"Path not found: {path}",
-                details={"path": str(path)},
-            )
-
         try:
+            if not path.exists():
+                raise AppFileNotFoundError(
+                    message=f"Path not found: {path}",
+                    details={"path": str(path)},
+                )
+
             stat = path.stat()
 
             # Convert timestamps to datetime

@@ -33,11 +33,15 @@ def validate_path_in_data_dir(path: Optional[str]) -> Optional[str]:
     settings = get_settings()
     data_dir = Path(settings.data_dir).resolve()
 
+    # Normalize backslashes to forward slashes for cross-platform security
+    # On Linux, backslash is a valid filename character, not a path separator
+    normalized = path.replace("\\", "/")
+
     # Resolve the path relative to data_dir
-    if os.path.isabs(path):
-        resolved = Path(path).resolve()
+    if os.path.isabs(normalized):
+        resolved = Path(normalized).resolve()
     else:
-        resolved = (data_dir / path).resolve()
+        resolved = (data_dir / normalized).resolve()
 
     # Check if resolved path is within data_dir
     try:
