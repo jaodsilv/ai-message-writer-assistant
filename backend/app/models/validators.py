@@ -33,8 +33,9 @@ def validate_path_in_data_dir(path: Optional[str]) -> Optional[str]:
     settings = get_settings()
     data_dir = Path(settings.data_dir).resolve()
 
-    # Normalize backslashes to forward slashes for cross-platform security
-    # On Linux, backslash is a valid filename character, not a path separator
+    # Normalize backslashes to forward slashes for cross-platform security.
+    # On Linux, backslash is a valid filename character, not a path separator,
+    # so "..\secret" would resolve as a literal filename, bypassing traversal detection.
     normalized = path.replace("\\", "/")
 
     # Resolve the path relative to data_dir

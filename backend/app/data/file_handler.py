@@ -659,6 +659,9 @@ class FileHandler:
             The created_at field uses st_ctime which represents:
             - On Windows: The actual file creation time
             - On Unix/Linux: The last metadata change time (inode change)
+
+            The exists() check is inside the try/except block so that OS errors
+            from exists() are caught and translated to app-specific exceptions.
         """
         try:
             if not path.exists():
