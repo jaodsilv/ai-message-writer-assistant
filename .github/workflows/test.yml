@@ -35,7 +35,7 @@ jobs:
           pip install -r requirements.txt -r requirements-dev.txt
           pip check
 
-      - name: Run tests with coverage
+      - name: Run tests with coverage (minimum 80%)
         run: pytest --cov=app --cov-report=term-missing --cov-report=xml --cov-fail-under=80
 
       - name: Upload coverage report
@@ -69,12 +69,16 @@ jobs:
 
       - name: Check formatting with Black
         run: black --check --diff --config=pyproject.toml app/
+        if: success() || failure()
 
       - name: Check import sorting with isort
         run: isort --check-only --diff --settings-path=pyproject.toml app/
+        if: success() || failure()
 
       - name: Lint with flake8
         run: flake8 --max-line-length=120 --extend-ignore=E203,W503 app/
+        if: success() || failure()
 
       - name: Type check with mypy
         run: mypy --config-file=pyproject.toml app/
+        if: success() || failure()
