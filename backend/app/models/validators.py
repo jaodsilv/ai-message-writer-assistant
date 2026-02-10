@@ -38,8 +38,16 @@ def validate_path_in_data_dir(path: Optional[str]) -> Optional[str]:
     # so "..\secret" would resolve as a literal filename, bypassing traversal detection.
     normalized = path.replace("\\", "/")
 
+    # Check for Windows-style absolute paths (e.g., C:/... or C:\...)
+    # which may not be detected by os.path.isabs() on non-Windows platforms
+    is_windows_absolute = (
+        len(normalized) >= 2
+        and normalized[0].isalpha()
+        and normalized[1] == ":"
+    )
+
     # Resolve the path relative to data_dir
-    if os.path.isabs(normalized):
+    if os.path.isabs(normalized) or is_windows_absolute:
         resolved = Path(normalized).resolve()
     else:
         resolved = (data_dir / normalized).resolve()
