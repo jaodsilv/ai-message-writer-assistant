@@ -44,7 +44,7 @@ jobs:
           name: coverage-report
           path: backend/coverage.xml
           if-no-files-found: error
-        if: always()
+        if: success() || failure()
 
   lint:
     runs-on: ubuntu-latest

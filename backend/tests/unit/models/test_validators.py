@@ -89,6 +89,24 @@ class TestValidatePathInDataDir:
         result = validate_path_in_data_dir(original)
         assert result == original
 
+    def test_blocks_absolute_path_outside_data_dir(self, mock_settings: Any) -> None:
+        """Absolute paths outside the data directory are rejected."""
+        with pytest.raises(ValueError) as exc_info:
+            validate_path_in_data_dir("/etc/passwd")
+        assert "outside allowed directory" in str(exc_info.value).lower()
+
+    def test_accepts_absolute_path_inside_data_dir(self, mock_settings: Any, temp_data_dir: str) -> None:
+        """Absolute paths within the data directory are accepted."""
+        path_inside = f"{temp_data_dir}/conversations/thread.yaml"
+        result = validate_path_in_data_dir(path_inside)
+        assert result == path_inside
+
+    def test_blocks_absolute_backslash_path_outside_data_dir(self, mock_settings: Any) -> None:
+        """Absolute paths with backslashes outside data dir are rejected."""
+        with pytest.raises(ValueError) as exc_info:
+            validate_path_in_data_dir("C:\\Windows\\System32\\config")
+        assert "outside allowed directory" in str(exc_info.value).lower()
+
 
 @pytest.mark.unit
 class TestValidateAttachmentPaths:
