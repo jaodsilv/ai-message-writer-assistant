@@ -659,14 +659,17 @@ class FileHandler:
             The created_at field uses st_ctime which represents:
             - On Windows: The actual file creation time
             - On Unix/Linux: The last metadata change time (inode change)
-        """
-        if not path.exists():
-            raise AppFileNotFoundError(
-                message=f"Path not found: {path}",
-                details={"path": str(path)},
-            )
 
+            The exists() check is inside the try/except block so that OS errors
+            from exists() are caught and translated to app-specific exceptions.
+        """
         try:
+            if not path.exists():
+                raise AppFileNotFoundError(
+                    message=f"Path not found: {path}",
+                    details={"path": str(path)},
+                )
+
             stat = path.stat()
 
             # Convert timestamps to datetime

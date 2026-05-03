@@ -960,6 +960,21 @@ class TestFileHandlerExceptionPaths:
             with pytest.raises(FileOperationError):
                 await file_handler.get_file_info(test_file)
 
+    async def test_get_file_info_exists_permission_error(self, tmp_path: Path, file_handler: FileHandler) -> None:
+        """Test get_file_info raises FileAccessError when path.exists() raises PermissionError."""
+        # Arrange
+        test_file = tmp_path / "permission_exists_test.txt"
+        test_file.write_text("content", encoding="utf-8")
+
+        # Mock Path.exists to raise PermissionError (caught by outer try/except)
+        with patch.object(Path, "exists", side_effect=PermissionError("Access denied")):
+            # Act & Assert
+            with pytest.raises(FileAccessError) as exc_info:
+                await file_handler.get_file_info(test_file)
+
+            assert "Permission denied" in exc_info.value.message
+            assert exc_info.value.status_code == 403
+
 
 # =============================================================================
 # FileInfo Validation Tests

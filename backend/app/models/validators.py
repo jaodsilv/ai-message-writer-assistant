@@ -33,11 +33,20 @@ def validate_path_in_data_dir(path: Optional[str]) -> Optional[str]:
     settings = get_settings()
     data_dir = Path(settings.data_dir).resolve()
 
+    # Normalize backslashes to forward slashes for cross-platform security.
+    # On Linux, backslash is a valid filename character, not a path separator,
+    # so "..\secret" would resolve as a literal filename, bypassing traversal detection.
+    normalized = path.replace("\\", "/")
+
+    # Check for Windows-style absolute paths (e.g., C:/... or C:\...)
+    # which may not be detected by os.path.isabs() on non-Windows platforms
+    is_windows_absolute = len(normalized) >= 2 and normalized[0].isalpha() and normalized[1] == ":"
+
     # Resolve the path relative to data_dir
-    if os.path.isabs(path):
-        resolved = Path(path).resolve()
+    if os.path.isabs(normalized) or is_windows_absolute:
+        resolved = Path(normalized).resolve()
     else:
-        resolved = (data_dir / path).resolve()
+        resolved = (data_dir / normalized).resolve()
 
     # Check if resolved path is within data_dir
     try:
